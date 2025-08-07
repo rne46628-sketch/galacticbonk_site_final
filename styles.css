@@ -1,0 +1,571 @@
+/*
+ * Global stylesheet for the GalacticBonk redesign
+ *
+ * Colours and fonts are defined via CSS variables for easy
+ * theming. A cosmic palette of deep blues and purples is
+ * contrasted with vibrant neon accents for key UI elements.
+ */
+
+/* Reset and baseline styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--dark-bg);
+  color: var(--text-col);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+h1, h2, h3 {
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+a {
+  color: var(--accent2);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover {
+  color: var(--accent1);
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Colour palette variables */
+:root {
+  --dark-bg: #03060f;
+  --deep-space: #0d1343;
+  /* Nebula purple shade for alternate section backgrounds.  Tweaked
+     to be slightly brighter for better contrast with text. */
+  --nebula-purple: #3a227a;
+  --accent1: #ff3860; /* pink */
+  --accent2: #00c2cb; /* teal */
+  --accent3: #9b59b6; /* purple */
+  --accent4: #ffd700; /* yellow */
+  --text-col: #e7e7f6;
+  --card-bg: rgba(13, 19, 67, 0.8);
+  --border-col: rgba(255, 255, 255, 0.1);
+}
+
+/* Container utility to centre content and set max widths */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Starfield container occupies full viewport behind all content */
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+}
+
+/* Site header */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  background: rgba(3, 6, 15, 0.6);
+  border-bottom: 1px solid var(--border-col);
+}
+.nav-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--accent4);
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.nav-menu {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+.nav-menu a {
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  color: var(--text-col);
+}
+.nav-menu a:hover {
+  background: var(--accent1);
+  color: var(--dark-bg);
+}
+
+/* Hero section */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-image: url('assets/galaxy_background.png');
+  background-size: cover;
+  background-position: center;
+  padding-top: 8rem; /* allow extra space so the header does not overlap the heading */
+  padding-bottom: 3rem;
+  overflow: hidden;
+}
+.hero-content {
+  z-index: 1;
+  max-width: 600px;
+}
+.hero-title {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  color: var(--accent4);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+.hero-tagline {
+  font-size: 1.25rem;
+  color: var(--text-col);
+  margin: 1rem 0 2rem;
+}
+.cta-button {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: var(--accent2);
+  color: var(--dark-bg);
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.cta-button:hover {
+  transform: scale(1.05);
+  background: var(--accent1);
+  box-shadow: 0 0 15px var(--accent1);
+}
+
+/* Rocket animation */
+/* Animated rocket floats up and down on the hero.  The size is
+   increased on larger screens for greater visual impact.  On
+   smaller screens the rocket is hidden to conserve space (see
+   responsive tweaks below). */
+.rocket-wrapper {
+  position: absolute;
+  bottom: 0;
+  right: 5%;
+  width: 160px;
+  height: 320px;
+  overflow: visible;
+}
+.rocket {
+  width: 100%;
+  animation: liftOff 6s infinite ease-in-out;
+}
+@keyframes liftOff {
+  0% {
+    transform: translateY(0) scale(0.8) rotate(-10deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-200px) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-400px) scale(0.8) rotate(10deg);
+    opacity: 0.5;
+  }
+}
+
+/* Mascot styling.  The dog avatar floats gently up and down on the
+   left side of the hero, reinforcing the brand identity without
+   overwhelming the main headline. */
+.mascot-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  width: 180px;
+  height: 180px;
+  overflow: visible;
+}
+.mascot {
+  width: 100%;
+  height: auto;
+  animation: float 7s infinite ease-in-out;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+}
+/* Generic section styling */
+.section {
+  /* Provide generous vertical padding and offset scroll positioning to account
+     for the fixed header.  The scroll‑margin‑top ensures that when users
+     navigate to an anchor via the nav, the section content isn’t hidden
+     beneath the header. */
+  padding: 6rem 0;
+  scroll-margin-top: 6rem;
+  background: var(--deep-space);
+  border-top: 1px solid var(--border-col);
+  border-bottom: 1px solid var(--border-col);
+}
+.section:nth-of-type(even) {
+  background: var(--nebula-purple);
+}
+.section-title {
+  font-size: 2.5rem;
+  color: var(--accent4);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.section-text {
+  font-size: 1.125rem;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  text-align: center;
+  color: var(--text-col);
+}
+
+/* Cards used in the buy section */
+.card-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin-top: 2rem;
+}
+.info-card {
+  display: block;
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border-col);
+  color: var(--text-col);
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.info-card h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  color: var(--accent2);
+}
+.info-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Wallet connect button */
+.wallet-button {
+  display: inline-block;
+  background: var(--accent1);
+  color: var(--dark-bg);
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  transition: background 0.3s ease;
+}
+.wallet-button:hover {
+  background: var(--accent2);
+}
+.wallet-status {
+  color: var(--accent4);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+/* Tokenomics section */
+.chart-container {
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+.token-list {
+  margin-top: 2rem;
+  list-style: none;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.token-list li {
+  margin-bottom: 0.75rem;
+  color: var(--text-col);
+}
+
+/* How to buy steps */
+.steps-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin-top: 2rem;
+}
+.step h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent2);
+}
+.step p {
+  font-size: 0.95rem;
+  color: var(--text-col);
+}
+.contract-address {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.contract-address code {
+  font-family: 'Orbitron', monospace;
+  background: var(--card-bg);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--accent4);
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+.copy-button {
+  background: var(--accent1);
+  color: var(--dark-bg);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.copy-button:hover {
+  background: var(--accent2);
+}
+.copy-status {
+  font-size: 0.85rem;
+  color: var(--accent4);
+}
+
+/* Timeline for roadmap */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-top: 2rem;
+  gap: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent3);
+  transform: translateX(-50%);
+}
+.timeline-item {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  padding: 0 1rem;
+}
+.timeline-item:nth-child(even) {
+  justify-content: flex-end;
+}
+.timeline-content {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border: 1px solid var(--border-col);
+  border-radius: 0.75rem;
+  width: 45%;
+  position: relative;
+  color: var(--text-col);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+.timeline-content::before {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  width: 12px;
+  height: 12px;
+  background: var(--accent2);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent2);
+}
+.timeline-item:nth-child(odd) .timeline-content::before {
+  right: -6px;
+}
+.timeline-item:nth-child(even) .timeline-content::before {
+  left: -6px;
+}
+.timeline-content h3 {
+  color: var(--accent4);
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+.timeline-content p {
+  font-size: 0.95rem;
+  color: var(--text-col);
+}
+
+/* Social links and tweets */
+.social-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.social-links img {
+  width: 32px;
+  height: 32px;
+  filter: brightness(0) invert(1) drop-shadow(0 0 6px var(--accent2));
+  transition: transform 0.3s ease;
+}
+.social-links img:hover {
+  transform: scale(1.2);
+}
+.whitepaper-link {
+  background: var(--accent1);
+  color: var(--dark-bg);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  box-shadow: 0 0 10px var(--accent1);
+  transition: background 0.3s ease;
+}
+.whitepaper-link:hover {
+  background: var(--accent2);
+  box-shadow: 0 0 10px var(--accent2);
+}
+.tweet-feed {
+  list-style: none;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.tweet-feed li {
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-col);
+  color: var(--text-col);
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+.tweet-feed li strong {
+  color: var(--accent4);
+}
+.tweet-feed li span {
+  color: var(--accent2);
+  font-size: 0.8rem;
+}
+
+/* FAQ accordion */
+.faq-item {
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--border-col);
+  background: var(--card-bg);
+}
+.faq-question {
+  width: 100%;
+  text-align: left;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent2);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.faq-question::after {
+  content: '+';
+  font-size: 1.25rem;
+  transition: transform 0.3s ease;
+}
+.faq-item.open .faq-question::after {
+  transform: rotate(45deg);
+}
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  padding: 0 1rem;
+}
+.faq-answer p, .faq-answer a {
+  margin: 0.5rem 0;
+  color: var(--text-col);
+}
+.faq-answer a {
+  color: var(--accent1);
+  text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+  background: rgba(3, 6, 15, 0.8);
+  padding: 2rem 0;
+  text-align: center;
+  border-top: 1px solid var(--border-col);
+  color: var(--text-col);
+  font-size: 0.875rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none; /* simple header on mobile; nav can be implemented as overlay if needed */
+  }
+  .timeline::before {
+    left: 20px;
+  }
+  .timeline-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .timeline-content {
+    width: calc(100% - 40px);
+    margin-left: 40px;
+  }
+  .timeline-content::before {
+    left: -26px;
+  }
+  .rocket-wrapper {
+    display: none; /* hide rocket on small screens to save space */
+  }
+}

@@ -741,3 +741,28 @@ a:hover {
 .logo-text {
   color: #fff !important;
 }
+
+/* Override section backgrounds to show the full starfield */
+.about,
+.buy,
+.tokenomics,
+.roadmap,
+.how,
+.community,
+.faq,
+.landing,
+.footer {
+  background: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Soften the section panels for readability while letting the stars shine */
+.section-inner {
+  background: rgba(10, 10, 35, 0.6) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* Ensure the site logo text matches the navigation */
+.site-header .logo-text {
+  color: var(--color-text) !important;
+}

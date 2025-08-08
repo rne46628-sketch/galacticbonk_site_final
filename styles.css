@@ -278,15 +278,11 @@ a:hover {
    container ignores pointer events so it doesn’t interfere with
    interactions. */
 .dog-container {
-  position: fixed;
-  top: 50%;
-  left: -150px; /* start off‑screen */
-  width: 150px;
-  transform: translateY(-50%);
-  pointer-events: none;
-  z-index: 30;
-  perspective: 800px;
-  will-change: transform;
+  /* The dog container is no longer visible because the mascot is drawn
+     directly onto the canvas in JavaScript.  Keeping this rule
+     ensures the element remains out of the document flow without
+     removing it entirely (in case future fallbacks are needed). */
+  display: none;
 }
 
 .dog-img {

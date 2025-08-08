@@ -17,6 +17,22 @@
     let supernovas = [];
     let nebulas = [];
 
+    // Load the G‑Bonk mascot for rendering directly on the canvas.  By drawing
+    // the dog into the universe rather than overlaying it in the DOM we
+    // integrate it seamlessly with the stars, comets and nebulas.  This
+    // approach also makes the dog responsive to canvas transforms like
+    // rotation and scaling.
+    const dogImg = new Image();
+    dogImg.src = 'dog3d.png';
+    // Approximate aspect ratio of the dog sprite (width/height).  Our
+    // cropped 3D mascot has a width of ~614px and height of ~1382px giving
+    // a ratio of about 0.444.  This ratio is used to compute the base
+    // rendering dimensions.  Should the underlying image change, update
+    // these values accordingly.
+    const DOG_RATIO = 0.444;
+    const DOG_BASE_HEIGHT = 260;
+    const DOG_BASE_WIDTH = DOG_BASE_HEIGHT * DOG_RATIO;
+
     // Helper to create a batch of stars
     function spawnStars(num) {
       for (let i = 0; i < num; i++) {
@@ -181,6 +197,44 @@
           supernovas.splice(index, 1);
         }
       });
+
+      // Draw the G‑Bonk dog.  Compute scroll progress to determine the
+      // mascot’s position, rotation and scale.  The dog travels across
+      // the viewport from left to right as the user scrolls down the
+      // document.  It bobs up and down, rotates around its yaw axis and
+      // scales closer and further away to simulate depth.  We check
+      // dogImg.complete so we don’t attempt to draw it before it has
+      // loaded.
+      if (dogImg.complete && dogImg.naturalWidth > 0) {
+        const doc = document.documentElement;
+        const scrollTop = window.pageYOffset || doc.scrollTop;
+        const scrollHeight = doc.scrollHeight - doc.clientHeight;
+        const percent = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+        // Horizontal travel across the entire canvas plus extra margins.  The
+        // dog starts 150px off‑screen and exits 150px off‑screen on the
+        // opposite side.
+        const totalDistance = w + 300;
+        const x = percent * totalDistance - 150;
+        // Vertical bobbing relative to canvas height.  We center the dog
+        // vertically and add a sine wave for gentle floating.
+        const bob = Math.sin(percent * Math.PI * 4) * 50;
+        const y = h * 0.5 + bob;
+        // Rotation around the Y‑axis (yaw) expressed in radians.  A higher
+        // frequency yields playful wobbling as the dog travels.
+        const rotate = Math.sin(percent * Math.PI * 8) * 25 * Math.PI / 180;
+        // Scale the sprite so it grows when approaching the middle of the
+        // journey and shrinks at the beginning and end.  This implies
+        // depth as though the mascot is flying closer then further away.
+        const scale = 0.8 + 0.4 * Math.sin(percent * Math.PI);
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rotate);
+        ctx.scale(scale, scale);
+        // Draw the image centred on its origin.  Use the base width and
+        // height defined at initialisation to ensure consistent sizing.
+        ctx.drawImage(dogImg, -DOG_BASE_WIDTH / 2, -DOG_BASE_HEIGHT / 2, DOG_BASE_WIDTH, DOG_BASE_HEIGHT);
+        ctx.restore();
+      }
       requestAnimationFrame(draw);
     }
 

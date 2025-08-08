@@ -246,7 +246,10 @@ a:hover {
   left: 10%;
   width: 100px;
   height: 200px;
-  animation: launch 15s linear infinite;
+  /* Disable the default CSS animation.  The hero rocket will instead
+     follow a scroll‑driven path defined in JavaScript.  The landing
+     rocket still uses its own animation on `.landing-container`. */
+  animation: none;
 }
 @keyframes launch {
   0% {
@@ -281,6 +284,13 @@ a:hover {
   max-width: 900px;
   width: 100%;
   text-align: center;
+  /* Give each section a semi‑transparent panel with a backdrop blur to
+     dramatically improve readability against the animated starfield. */
+  background: rgba(10, 10, 35, 0.75);
+  backdrop-filter: blur(8px);
+  padding: 40px 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   opacity: 0;
   transform: translateY(40px);
   transition: opacity 0.8s ease-out, transform 0.8s ease-out;
@@ -294,36 +304,46 @@ a:hover {
 .hero {
   background: radial-gradient(circle at center, rgba(255,255,255,0.05), transparent 70%);
 }
+
+/* Override generic panel styles for the hero section.  The hero's
+   content appears directly on the starfield without a backdrop so the
+   rocket and title remain the focal point. */
+.hero .section-inner {
+  background: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  padding: 0;
+}
 .about {
   /* Increase background opacity for better contrast */
   /* Increase opacity slightly for better readability against the animated
      backdrop.  Each section uses a different tint to help separate
      content while still letting the starfield show through. */
-  background: rgba(0, 0, 50, 0.7);
+  background: rgba(0, 0, 50, 0.8);
 }
 .buy {
-  background: rgba(0, 10, 60, 0.7);
+  background: rgba(0, 10, 60, 0.8);
 }
 .tokenomics {
-  background: rgba(0, 20, 70, 0.7);
+  background: rgba(0, 20, 70, 0.8);
 }
 .roadmap {
-  background: rgba(20, 0, 60, 0.7);
+  background: rgba(20, 0, 60, 0.8);
 }
 .how {
-  background: rgba(30, 0, 50, 0.7);
+  background: rgba(30, 0, 50, 0.8);
 }
 .community {
-  background: rgba(40, 0, 40, 0.7);
+  background: rgba(40, 0, 40, 0.8);
 }
 .faq {
-  background: rgba(50, 0, 30, 0.7);
+  background: rgba(50, 0, 30, 0.8);
 }
 
 /* Landing section styles.  The closing scene features a planet horizon and a
    rocket descending to symbolise the end of the journey. */
 .landing {
-  background: rgba(60, 0, 80, 0.7);
+  background: rgba(60, 0, 80, 0.8);
 }
 .planet {
   position: absolute;
@@ -596,6 +616,31 @@ a:hover {
   backdrop-filter: blur(4px);
   position: relative;
   z-index: 10;
+}
+
+/* Scroll progress indicator.  A slim vertical bar on the right edge of
+   the screen shows how far down the page the visitor has scrolled.
+   It uses a gradient to tie in with the site’s primary and secondary
+   colours. */
+.progress-container {
+  position: fixed;
+  top: 0;
+  right: 20px;
+  width: 4px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 150;
+  border-radius: 2px;
+}
+.progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(to top, var(--color-secondary), var(--color-primary));
+  border-radius: 2px;
+  transition: height 0.2s ease-out;
 }
 
 /* Utilities */

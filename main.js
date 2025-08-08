@@ -72,17 +72,23 @@
     // that stars can twinkle on top.
     function spawnNebula() {
       const colours = [
-        ['rgba(200, 80, 255, 0.05)', 'rgba(50, 0, 70, 0)'],
-        ['rgba(0, 150, 200, 0.05)', 'rgba(0, 30, 50, 0)'],
-        ['rgba(255, 80, 120, 0.05)', 'rgba(70, 0, 20, 0)'],
+        // Deep magenta to indigo
+        ['rgba(200, 80, 255, 0.05)', 'rgba(40, 0, 80, 0)'],
+        // Cyan to midnight blue
+        ['rgba(0, 180, 220, 0.05)', 'rgba(0, 20, 60, 0)'],
+        // Pink to burgundy
+        ['rgba(255, 100, 150, 0.05)', 'rgba(70, 0, 20, 0)'],
+        // Gold to amber
+        ['rgba(255, 180, 70, 0.05)', 'rgba(70, 20, 0, 0)'],
       ];
       const choice = colours[Math.floor(Math.random() * colours.length)];
       return {
         x: Math.random() * w,
         y: Math.random() * h,
-        radius: w * 0.5 + Math.random() * w * 0.4,
+        radius: w * 0.4 + Math.random() * w * 0.6,
         angle: Math.random() * Math.PI * 2,
-        speed: (Math.random() * 0.0005) + 0.0002,
+        speed: (Math.random() * 0.0007) + 0.0001,
+        scaleX: 1.0 + Math.random() * 1.5,
         inner: choice[0],
         outer: choice[1],
       };
@@ -114,6 +120,9 @@
         ctx.save();
         ctx.translate(n.x, n.y);
         ctx.rotate(n.angle);
+        // Apply horizontal scaling to create elliptical nebulae.  This adds
+        // variety to the shapes and makes the nebulas feel more organic.
+        ctx.scale(n.scaleX, 1);
         const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, n.radius);
         grad.addColorStop(0, n.inner);
         grad.addColorStop(1, n.outer);
@@ -122,8 +131,12 @@
         ctx.arc(0, 0, n.radius, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
-        // Advance rotation very slowly
+        // Advance rotation slowly and also gently fluctuate the scale to
+        // simulate swirling clouds.
         n.angle += n.speed;
+        // Oscillate scaleX between its original value and a slightly
+        // expanded state for subtle pulsation.
+        n.scaleX += Math.sin(performance.now() * 0.0002) * 0.0003;
       });
       // Draw stars.  Stars are updated based on their individual speeds.
       stars.forEach((s) => {
@@ -332,5 +345,54 @@
     initCopyAddress();
     initWalletConnect();
     initFAQ();
+    initRocketScroll();
+    initProgressBar();
   });
+
+  // Animate the hero rocket based on scroll position rather than a fixed
+  // CSS animation.  As the user scrolls past the hero section the rocket
+  // moves diagonally upward and rotates slightly, reinforcing the sense
+  // of lifting off.  This function disables the default CSS animation on
+  // the hero rocket and updates its transform on each scroll event.
+  function initRocketScroll() {
+    const rockets = document.querySelectorAll('.rocket-container');
+    if (!rockets.length) return;
+    const heroRocket = rockets[0];
+    // Stop the CSS animation if it exists
+    heroRocket.style.animation = 'none';
+    window.addEventListener('scroll', () => {
+      const heroSection = document.getElementById('hero');
+      if (!heroSection) return;
+      const rect = heroSection.getBoundingClientRect();
+      // Calculate how far the hero section has scrolled out of view.  When
+      // the top of the hero is at the top of the viewport, progress is 0.
+      // When the bottom of the hero hits the top of the viewport, progress
+      // reaches 1.
+      const progress = Math.min(Math.max(1 - rect.bottom / rect.height, 0), 1);
+      // Define a flight path: move to the right and up as progress
+      const translateX = 600 * progress;
+      const translateY = -800 * progress;
+      const rotate = -20 * progress;
+      heroRocket.style.transform = `translate(${translateX}px, ${translateY}px) rotate(${rotate}deg)`;
+    });
+  }
+
+  // Update the scroll progress indicator based on page scroll position.  The
+  // height of the progress bar reflects the percentage of the document
+  // that has been scrolled.  Because the progress bar is purely
+  // decorative, it does not interfere with keyboard navigation.
+  function initProgressBar() {
+    const progress = document.querySelector('.progress-bar');
+    if (!progress) return;
+    const update = () => {
+      const doc = document.documentElement;
+      const scrollTop = window.pageYOffset || doc.scrollTop;
+      const scrollHeight = doc.scrollHeight - doc.clientHeight;
+      const percent = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
+      progress.style.height = `${percent * 100}%`;
+    };
+    update();
+    window.addEventListener('scroll', update);
+    window.addEventListener('resize', update);
+  }
 })();

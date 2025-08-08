@@ -411,16 +411,29 @@
       const scrollTop = window.pageYOffset || doc.scrollTop;
       const scrollHeight = doc.scrollHeight - doc.clientHeight;
       const percent = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
-      // Horizontal travel: move from off‑screen left to off‑screen right
+      // Horizontal travel: move from off‑screen left to off‑screen right.
+      // The dog traverses the entire viewport plus an extra margin so it
+      // appears to enter and exit the scene smoothly.
       const viewportWidth = window.innerWidth;
       const totalDistance = viewportWidth + 300; // 150px off‑screen on each side
       const translateX = percent * totalDistance - 150;
-      // Vertical bobbing: oscillate up and down around 50% viewport height
+      // Vertical bobbing: oscillate up and down to suggest floating.
       const bob = Math.sin(percent * Math.PI * 4) * 50;
       const translateY = bob;
-      // 3D yaw rotation: tilt as it moves
-      const rotateY = Math.sin(percent * Math.PI * 6) * 20; // degrees
-      dog.style.transform = `translate(${translateX}px, calc(-50% + ${translateY}px)) rotateY(${rotateY}deg)`;
+      // 3D yaw rotation: tilt left and right as it moves.  A faster
+      // frequency adds playful energy to the animation.
+      const rotateY = Math.sin(percent * Math.PI * 8) * 25; // degrees
+      // 3D pitch rotation: nod the dog up and down to further
+      // emphasise its three‑dimensionality.
+      const rotateX = Math.sin(percent * Math.PI * 6) * 10; // degrees
+      // Scale the dog slightly along its journey.  At the middle of the
+      // scroll it grows larger, creating a sense of depth as if the
+      // mascot is coming closer to the viewer, then recedes again.
+      const scale = 0.8 + 0.4 * Math.sin(percent * Math.PI);
+      dog.style.transform =
+        `translate(${translateX}px, calc(-50% + ${translateY}px)) ` +
+        `rotateY(${rotateY}deg) rotateX(${rotateX}deg) ` +
+        `scale(${scale})`;
     };
     updateDog();
     window.addEventListener('scroll', updateDog);

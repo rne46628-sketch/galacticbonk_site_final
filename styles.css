@@ -292,7 +292,11 @@ a:hover {
   height: auto;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+  /* Increase the depth effect on the mascot by intensifying the drop
+     shadow and brightening the sprite slightly.  This helps the dog
+     stand out against the dark background and gives the impression
+     of a light source shining from above. */
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6)) brightness(1.1);
 }
 
 /* Animate the rocket flame.  The flame polygon scales and stretches

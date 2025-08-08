@@ -780,3 +780,8 @@ a:hover {
 .hero .section-inner {
   padding: 40px 30px !important;
 }
+
+/* Remove scroll progress indicator */
+.progress-container {
+  display: none !important;
+}

@@ -576,6 +576,10 @@
     directional.position.set(5, 10, 7);
     scene.add(directional);
     // Group to hold all dog parts for easy transformation
+    // Declare limb variables here so they are accessible within the
+    // animation loop.  They will be assigned later when the meshes
+    // are created.
+    let leftArm, rightArm, leftLeg, rightLeg, tailPivot;
     const dog = new THREE.Group();
     scene.add(dog);
     // Body – blue sphere scaled into an ellipsoid for the spacesuit
@@ -603,15 +607,57 @@
     const nose = new THREE.Mesh(noseGeom, noseMat);
     nose.position.set(0, 1.33, 0.63);
     dog.add(nose);
-    // Eyes – two black spheres
-    const eyeGeom = new THREE.SphereGeometry(0.08, 16, 16);
-    const eyeMat = new THREE.MeshPhongMaterial({ color: 0x000000 });
-    const leftEye = new THREE.Mesh(eyeGeom, eyeMat);
-    leftEye.position.set(-0.22, 1.5, 0.52);
-    const rightEye = leftEye.clone();
-    rightEye.position.set(0.22, 1.5, 0.52);
-    dog.add(leftEye);
-    dog.add(rightEye);
+    // Construct expressive eyes with eyeballs, pupils and highlights.
+    const eyeBallGeom = new THREE.SphereGeometry(0.15, 16, 16);
+    const eyeBallMat = new THREE.MeshPhongMaterial({ color: 0xffffff });
+    const pupilGeom = new THREE.SphereGeometry(0.07, 16, 16);
+    const pupilMat = new THREE.MeshPhongMaterial({ color: 0x000000 });
+    const glintGeom = new THREE.SphereGeometry(0.03, 16, 16);
+    const glintMat = new THREE.MeshPhongMaterial({ color: 0xffffff });
+    function createEye(x, y, z) {
+      const eyeGroup = new THREE.Group();
+      const eyeball = new THREE.Mesh(eyeBallGeom, eyeBallMat);
+      eyeGroup.add(eyeball);
+      const pupil = new THREE.Mesh(pupilGeom, pupilMat);
+      pupil.position.set(0, 0, 0.1);
+      eyeGroup.add(pupil);
+      const glint = new THREE.Mesh(glintGeom, glintMat);
+      glint.position.set(0.04, 0.04, 0.14);
+      eyeGroup.add(glint);
+      eyeGroup.position.set(x, y, z);
+      return eyeGroup;
+    }
+    dog.add(createEye(-0.22, 1.5, 0.52));
+    dog.add(createEye(0.22, 1.5, 0.52));
+    // Add cheeks with a soft pink tone.
+    const cheekGeom = new THREE.SphereGeometry(0.14, 16, 16);
+    const cheekMat = new THREE.MeshPhongMaterial({ color: 0xffc09e });
+    const leftCheek = new THREE.Mesh(cheekGeom, cheekMat);
+    leftCheek.position.set(-0.35, 1.28, 0.55);
+    const rightCheek = leftCheek.clone();
+    rightCheek.position.set(0.35, 1.28, 0.55);
+    dog.add(leftCheek);
+    dog.add(rightCheek);
+    // Add a rocket badge on the chest
+    const badgeGroup = new THREE.Group();
+    const badgeBaseGeom = new THREE.CylinderGeometry(0.16, 0.16, 0.02, 32);
+    const badgeBaseMat = new THREE.MeshPhongMaterial({ color: 0x004a7f });
+    const badgeBase = new THREE.Mesh(badgeBaseGeom, badgeBaseMat);
+    badgeBase.rotation.x = Math.PI / 2;
+    badgeGroup.add(badgeBase);
+    const rocketBodyGeom = new THREE.CylinderGeometry(0.035, 0.035, 0.14, 16);
+    const rocketMat = new THREE.MeshPhongMaterial({ color: 0xffd700 });
+    const rocketBody = new THREE.Mesh(rocketBodyGeom, rocketMat);
+    rocketBody.rotation.x = Math.PI / 2;
+    rocketBody.position.set(0, 0, 0.09);
+    badgeGroup.add(rocketBody);
+    const rocketConeGeom = new THREE.ConeGeometry(0.045, 0.08, 16);
+    const rocketCone = new THREE.Mesh(rocketConeGeom, rocketMat);
+    rocketCone.rotation.x = Math.PI / 2;
+    rocketCone.position.set(0, 0, 0.15);
+    badgeGroup.add(rocketCone);
+    badgeGroup.position.set(0, 0.3, 0.7);
+    dog.add(badgeGroup);
     // Ears – two orange cones
     const earGeom = new THREE.ConeGeometry(0.2, 0.6, 16);
     const earMat = new THREE.MeshPhongMaterial({ color: 0xf5a623 });
@@ -623,31 +669,36 @@
     rightEar.rotation.z = -Math.PI / 9;
     dog.add(leftEar);
     dog.add(rightEar);
-    // Arms – cylinders sticking out of the body
+    // Arms – cylinders sticking out of the body.  Assign to outer
+    // variables so they can be animated later.  Start with a
+    // horizontal orientation (rotation around Z) and position at
+    // shoulder level.
     const armGeom = new THREE.CylinderGeometry(0.12, 0.12, 0.6, 16);
     const armMat = new THREE.MeshPhongMaterial({ color: 0x0066aa });
-    const leftArm = new THREE.Mesh(armGeom, armMat);
+    leftArm = new THREE.Mesh(armGeom, armMat);
     leftArm.position.set(-0.8, 0.3, 0);
     leftArm.rotation.z = Math.PI / 2;
-    const rightArm = leftArm.clone();
+    rightArm = leftArm.clone();
     rightArm.position.set(0.8, 0.3, 0);
     dog.add(leftArm);
     dog.add(rightArm);
-    // Legs – cylinders under the body
+    // Legs – cylinders under the body.  Assign to outer variables so
+    // they can be animated.  Legs are oriented vertically by default.
     const legGeom = new THREE.CylinderGeometry(0.15, 0.15, 0.7, 16);
     const legMat = new THREE.MeshPhongMaterial({ color: 0x0066aa });
-    const leftLeg = new THREE.Mesh(legGeom, legMat);
+    leftLeg = new THREE.Mesh(legGeom, legMat);
     leftLeg.position.set(-0.4, -0.8, 0);
-    const rightLeg = leftLeg.clone();
+    rightLeg = leftLeg.clone();
     rightLeg.position.set(0.4, -0.8, 0);
     dog.add(leftLeg);
     dog.add(rightLeg);
-    // Tail – cylinder pivoting at the base
+    // Tail – cylinder pivoting at the base.  Assign pivot to the
+    // outer scope variable so it can be animated.  The tail mesh
+    // itself remains local.
     const tailGeom = new THREE.CylinderGeometry(0.05, 0.05, 0.8, 12);
     const tailMat = new THREE.MeshPhongMaterial({ color: 0xf5a623 });
     const tail = new THREE.Mesh(tailGeom, tailMat);
-    // pivot so it rotates around the body end rather than the centre
-    const tailPivot = new THREE.Object3D();
+    tailPivot = new THREE.Object3D();
     tailPivot.position.set(0, -0.2, -0.8);
     tail.position.set(0, 0.4, 0);
     tail.rotation.x = Math.PI / 2;
@@ -660,26 +711,41 @@
     helmet.position.set(0, 1.5, 0);
     dog.add(helmet);
     // Animation loop
+    // The dog now moves independently across the canvas.  It bounces within
+    // a defined region and animates its limbs to simulate walking.  A
+    // clock provides delta‑time for smooth motion.  The dog rotates to
+    // face its direction of travel and wags its tail.
+    const clock = new THREE.Clock();
+    const wanderArea = { x: 20, y: 10 };
+    const dogVelocity = new THREE.Vector3(
+      (Math.random() * 2 - 1) * 4,
+      (Math.random() * 2 - 1) * 2,
+      0
+    );
     function animate() {
       requestAnimationFrame(animate);
-      // Scroll progress influences horizontal travel, vertical bobbing and yaw rotation
-      const doc = document.documentElement;
-      const scrollTop = window.pageYOffset || doc.scrollTop;
-      const scrollHeight = doc.scrollHeight - doc.clientHeight;
-      const percent = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
-      // Horizontal travel across screen width: map to -20..20 units
-      const xRange = 20;
-      dog.position.x = (percent * 2 - 1) * xRange;
-      // Vertical bobbing: sine wave scaled to 2 units
-      dog.position.y = Math.sin(percent * Math.PI * 4) * 2;
-      // Depth oscillation: small z movement for subtle depth effect
-      dog.position.z = Math.cos(percent * Math.PI * 2) * 1.5;
-      // Rotate dog around Y axis (yaw) for playful wobble
-      dog.rotation.y = Math.sin(percent * Math.PI * 8) * 0.5;
-      // Wag tail based on time
-      const t = performance.now() * 0.005;
-      tailPivot.rotation.z = Math.sin(t * 6) * 0.6;
-      // Render scene
+      const delta = clock.getDelta();
+      // Update position
+      dog.position.x += dogVelocity.x * delta;
+      dog.position.y += dogVelocity.y * delta;
+      // Reflect at boundaries
+      if (dog.position.x > wanderArea.x) { dog.position.x = wanderArea.x; dogVelocity.x *= -1; }
+      if (dog.position.x < -wanderArea.x) { dog.position.x = -wanderArea.x; dogVelocity.x *= -1; }
+      if (dog.position.y > wanderArea.y) { dog.position.y = wanderArea.y; dogVelocity.y *= -1; }
+      if (dog.position.y < -wanderArea.y) { dog.position.y = -wanderArea.y; dogVelocity.y *= -1; }
+      // Orientation: face direction of travel plus a small wobble
+      const directionAngle = Math.atan2(dogVelocity.x, dogVelocity.y);
+      const wobble = Math.sin(clock.elapsedTime * 4) * 0.1;
+      dog.rotation.y = directionAngle + wobble;
+      // Limb animation for walking
+      const walkCycle = clock.elapsedTime * 6;
+      const walkAngle = Math.sin(walkCycle) * 0.6;
+      leftArm.rotation.z = Math.PI / 2 + walkAngle;
+      rightArm.rotation.z = Math.PI / 2 - walkAngle;
+      leftLeg.rotation.z = -walkAngle;
+      rightLeg.rotation.z = walkAngle;
+      // Wag tail
+      tailPivot.rotation.z = Math.sin(clock.elapsedTime * 6) * 0.6;
       renderer.render(scene, camera);
     }
     animate();

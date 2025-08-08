@@ -718,3 +718,8 @@ a:hover {
 .hidden {
   display: none;
 }
+
+/* Hide 3D mascot container */
+#dog3d-container {
+  display: none !important;
+}

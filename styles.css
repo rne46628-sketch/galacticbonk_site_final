@@ -786,6 +786,22 @@ a:hover {
   display: none !important;
 }
 
+/* Secondary call-to-action button
+   The secondary CTA is styled as an outlined button so it doesn’t compete
+   visually with the primary “Buy $GBONK” button.  It retains the same
+   padding and typography for consistency but uses a transparent
+   background and coloured border. */
+.secondary-cta {
+  margin-left: 12px;
+  background: transparent !important;
+  border: 2px solid var(--color-secondary);
+  color: var(--color-secondary) !important;
+}
+.secondary-cta:hover {
+  background: var(--color-secondary) !important;
+  color: #fff !important;
+}
+
 /* Hide scroll progress indicator */
 .progress-container {
   display: none !important;

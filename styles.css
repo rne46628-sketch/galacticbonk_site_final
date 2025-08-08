@@ -33,6 +33,7 @@ Core styles for the GalacticBonk site.  Colours and spacing are defined
   box-sizing: border-box;
 }
 
+
 html {
   scroll-behavior: smooth;
 }
@@ -783,5 +784,12 @@ a:hover {
 
 /* Remove scroll progress indicator */
 .progress-container {
+  display: none !important;
+}
+
+
+
+/* Hide rocket graphic */
+.rocket-container {
   display: none !important;
 }

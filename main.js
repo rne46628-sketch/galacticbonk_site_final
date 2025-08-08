@@ -33,6 +33,24 @@
     const DOG_BASE_HEIGHT = 260;
     const DOG_BASE_WIDTH = DOG_BASE_HEIGHT * DOG_RATIO;
 
+    // Track mouse movement to breathe life into our mascot.  We listen
+    // globally for pointer motion and normalise the x/y values to a
+    // range of [-0.5, 0.5].  These values modulate the dog’s rotation,
+    // scale and brightness in the draw loop.  The mascot will subtly
+    // tilt toward the pointer, grow when the pointer is near the
+    // centre and dim/brighten based on horizontal position.  Using
+    // viewport dimensions here ensures the behaviour remains
+    // consistent on resize.
+    let mouseX = 0;
+    let mouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+      // guard against zero width/height in edge cases
+      const vw = window.innerWidth || 1;
+      const vh = window.innerHeight || 1;
+      mouseX = (e.clientX / vw) - 0.5;
+      mouseY = (e.clientY / vh) - 0.5;
+    });
+
     // Helper to create a batch of stars
     function spawnStars(num) {
       for (let i = 0; i < num; i++) {
@@ -199,12 +217,12 @@
       });
 
       // Draw the G‑Bonk dog.  Compute scroll progress to determine the
-      // mascot’s position, rotation and scale.  The dog travels across
-      // the viewport from left to right as the user scrolls down the
-      // document.  It bobs up and down, rotates around its yaw axis and
-      // scales closer and further away to simulate depth.  We check
-      // dogImg.complete so we don’t attempt to draw it before it has
-      // loaded.
+      // mascot’s position, rotation and base scale.  The dog travels
+      // across the viewport from left to right as the user scrolls down
+      // the document.  It bobs up and down and scales in and out to
+      // simulate depth.  We further modulate these transforms using
+      // the pointer position so that the mascot appears to respond to
+      // user movement – tilting and brightening as the mouse moves.
       if (dogImg.complete && dogImg.naturalWidth > 0) {
         const doc = document.documentElement;
         const scrollTop = window.pageYOffset || doc.scrollTop;
@@ -214,25 +232,38 @@
         // dog starts 150px off‑screen and exits 150px off‑screen on the
         // opposite side.
         const totalDistance = w + 300;
-        const x = percent * totalDistance - 150;
+        const xPos = percent * totalDistance - 150;
         // Vertical bobbing relative to canvas height.  We center the dog
-        // vertically and add a sine wave for gentle floating.
+        // vertically and add a sine wave for gentle floating.  Pointer Y
+        // subtly adjusts vertical position to give a sense of depth.
         const bob = Math.sin(percent * Math.PI * 4) * 50;
-        const y = h * 0.5 + bob;
-        // Rotation around the Y‑axis (yaw) expressed in radians.  A higher
-        // frequency yields playful wobbling as the dog travels.
-        const rotate = Math.sin(percent * Math.PI * 8) * 25 * Math.PI / 180;
-        // Scale the sprite so it grows when approaching the middle of the
-        // journey and shrinks at the beginning and end.  This implies
-        // depth as though the mascot is flying closer then further away.
-        const scale = 0.8 + 0.4 * Math.sin(percent * Math.PI);
+        const yPos = h * 0.5 + bob + mouseY * 80;
+        // Base rotation around the Z‑axis (we use Z since 2D canvas
+        // doesn’t support 3D yaw/pitch).  A higher frequency yields
+        // playful wobbling as the dog travels.  Pointer X modifies the
+        // rotation so the dog turns slightly toward the cursor.
+        const baseRotate = Math.sin(percent * Math.PI * 8) * 25 * Math.PI / 180;
+        const interactiveRotate = baseRotate + mouseX * 0.5;
+        // Base scale – the mascot grows in the middle of the journey and
+        // shrinks near the start/end.  Pointer Y accentuates this,
+        // making the dog grow when the cursor is nearer the centre and
+        // shrink at the edges.  We clamp to reasonable limits.
+        let baseScale = 0.8 + 0.4 * Math.sin(percent * Math.PI);
+        baseScale *= 1 + mouseY * 0.3;
+        baseScale = Math.max(0.5, Math.min(1.4, baseScale));
         ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(rotate);
-        ctx.scale(scale, scale);
+        ctx.translate(xPos, yPos);
+        ctx.rotate(interactiveRotate);
+        ctx.scale(baseScale, baseScale);
+        // Adjust brightness and saturation based on pointer movement.
+        const brightness = 1 + Math.abs(mouseX) * 0.4;
+        const saturate = 1 + Math.abs(mouseY) * 0.5;
+        ctx.filter = `brightness(${brightness}) saturate(${saturate})`;
         // Draw the image centred on its origin.  Use the base width and
         // height defined at initialisation to ensure consistent sizing.
         ctx.drawImage(dogImg, -DOG_BASE_WIDTH / 2, -DOG_BASE_HEIGHT / 2, DOG_BASE_WIDTH, DOG_BASE_HEIGHT);
+        // Reset filter for subsequent drawings.
+        ctx.filter = 'none';
         ctx.restore();
       }
       requestAnimationFrame(draw);

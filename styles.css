@@ -679,6 +679,7 @@ a:hover {
   color: var(--color-muted);
 }
 
+
 /* Footer */
 .footer {
   padding: 20px 0;
@@ -773,4 +774,9 @@ a:hover {
 /* Ensure the site logo text matches the navigation */
 .site-header .logo-text {
   color: var(--color-text) !important;
+}
+
+/* Adjust hero section padding to align with other sections */
+.hero .section-inner {
+  padding: 40px 30px !important;
 }

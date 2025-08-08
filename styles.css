@@ -762,6 +762,14 @@ a:hover {
   backdrop-filter: blur(4px);
 }
 
+/* Remove the backdrop square behind the tokenomics donut chart */
+.chart-container {
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+
 /* Ensure the site logo text matches the navigation */
 .site-header .logo-text {
   color: var(--color-text) !important;

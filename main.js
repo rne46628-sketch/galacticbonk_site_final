@@ -196,6 +196,20 @@
       supernovas.push(spawnSupernova());
     }, 10000);
     draw();
+
+    // Spawn a supernova at the click location on the document.  This makes
+    // the universe interactive: tapping anywhere triggers a small
+    // explosion.  Coordinates are taken directly from the event, which
+    // correspond to the viewport; they map naturally onto the canvas.
+    document.addEventListener('click', (e) => {
+      supernovas.push({
+        x: e.clientX,
+        y: e.clientY,
+        radius: 0,
+        maxRadius: 80 + Math.random() * 100,
+        alpha: 1,
+      });
+    });
   }
 
   // FAQ toggle logic: expand/collapse answers on click
@@ -369,10 +383,15 @@
       // When the bottom of the hero hits the top of the viewport, progress
       // reaches 1.
       const progress = Math.min(Math.max(1 - rect.bottom / rect.height, 0), 1);
-      // Define a flight path: move to the right and up as progress
-      const translateX = 600 * progress;
-      const translateY = -800 * progress;
-      const rotate = -20 * progress;
+      // Define a curved flight path.  The rocket moves upward while
+      // oscillating horizontally along a gentle sine wave.  This adds
+      // dynamism compared to a straight line.  Rotation also varies
+      // slightly with a sine wave to suggest banking as it flies.
+      const baseX = 600 * progress;
+      const wave = Math.sin(progress * Math.PI) * 200; // side‑to‑side motion
+      const translateX = baseX + wave;
+      const translateY = -800 * progress + Math.sin(progress * Math.PI) * -120;
+      const rotate = -20 * progress + Math.sin(progress * Math.PI * 2) * 8;
       heroRocket.style.transform = `translate(${translateX}px, ${translateY}px) rotate(${rotate}deg)`;
     });
   }

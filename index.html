@@ -30,6 +30,15 @@
        positioned behind all other content. -->
   <canvas id="universe" aria-hidden="true"></canvas>
 
+  <!-- Scroll progress indicator.  This vertical bar shows how far
+       through the galactic journey you have travelled.  It fills from
+       bottom to top as you scroll the page.  Because it is purely
+       decorative, aria-hidden is set to true so screen readers ignore
+       it. -->
+  <div class="progress-container" aria-hidden="true">
+    <div class="progress-bar"></div>
+  </div>
+
   <!-- Header with navigation.  A skip link for accessibility allows keyboard
        users to bypass repeated content. -->
   <a href="#hero" class="skip-link">Skip to content</a>
@@ -68,17 +77,44 @@
     <!-- Rocket blasting off; the path draws a simple meme rocket with fins
          and flame.  It is animated via CSS to fly upward diagonally. -->
     <div class="rocket-container" aria-hidden="true">
-      <svg viewBox="0 0 100 200" class="rocket-svg">
-        <!-- Body of rocket -->
-        <polygon points="50,10 80,70 20,70" fill="#ff3860" />
-        <rect x="35" y="70" width="30" height="70" fill="#ffffff" />
-        <!-- Fins -->
-        <polygon points="20,70 35,110 20,110" fill="#ffa500" />
-        <polygon points="80,70 65,110 80,110" fill="#ffa500" />
-        <!-- Window -->
+      <svg viewBox="0 0 100 200" class="rocket-svg" xmlns="http://www.w3.org/2000/svg">
+        <!-- Define gradients to simulate a three‑dimensional rocket.  The body
+             gradient shades from light on the left to slightly darker on the
+             right; the nose and fins use their own gradients; and the flame
+             fades from bright yellow to deep orange. -->
+        <defs>
+          <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="100%" stop-color="#d9d9d9" />
+          </linearGradient>
+          <linearGradient id="noseGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ff6b8a" />
+            <stop offset="100%" stop-color="#ff3860" />
+          </linearGradient>
+          <linearGradient id="finGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ffc04d" />
+            <stop offset="100%" stop-color="#d67e00" />
+          </linearGradient>
+          <linearGradient id="flameGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="50%" stop-color="#ffd700" />
+            <stop offset="100%" stop-color="#ff4500" />
+          </linearGradient>
+        </defs>
+        <!-- Nose cone with gradient shading -->
+        <polygon points="50,10 80,70 20,70" fill="url(#noseGrad)" />
+        <!-- Body with horizontal shading -->
+        <rect x="35" y="70" width="30" height="70" fill="url(#bodyGrad)" />
+        <!-- Highlights and shadows on the rocket body for a pseudo 3D look -->
+        <rect x="35" y="70" width="9" height="70" fill="rgba(255,255,255,0.32)" />
+        <rect x="56" y="70" width="9" height="70" fill="rgba(0,0,0,0.32)" />
+        <!-- Fins with diagonal shading -->
+        <polygon points="20,70 35,110 20,110" fill="url(#finGrad)" />
+        <polygon points="80,70 65,110 80,110" fill="url(#finGrad)" />
+        <!-- Window remains a solid colour -->
         <circle cx="50" cy="100" r="10" fill="#00c2cb" />
-        <!-- Flame -->
-        <polygon points="35,140 50,190 65,140" fill="#ffd700" />
+        <!-- Flame with gradient for depth -->
+        <polygon points="35,140 50,190 65,140" fill="url(#flameGrad)" />
       </svg>
     </div>
   </section>
@@ -220,17 +256,42 @@
     <!-- Planet horizon and landing rocket (decorative) -->
     <div class="planet" aria-hidden="true"></div>
     <div class="landing-container" aria-hidden="true">
-      <svg viewBox="0 0 100 200" class="rocket-svg">
+      <svg viewBox="0 0 100 200" class="rocket-svg" xmlns="http://www.w3.org/2000/svg">
+        <!-- Gradients reused for the landing rocket to give a three‑dimensional
+             appearance.  Definitions are scoped within this SVG. -->
+        <defs>
+          <linearGradient id="bodyGrad2" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="100%" stop-color="#d9d9d9" />
+          </linearGradient>
+          <linearGradient id="noseGrad2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ff6b8a" />
+            <stop offset="100%" stop-color="#ff3860" />
+          </linearGradient>
+          <linearGradient id="finGrad2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ffc04d" />
+            <stop offset="100%" stop-color="#d67e00" />
+          </linearGradient>
+          <linearGradient id="flameGrad2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="50%" stop-color="#ffd700" />
+            <stop offset="100%" stop-color="#ff4500" />
+          </linearGradient>
+        </defs>
+        <!-- Nose -->
+        <polygon points="50,10 80,70 20,70" fill="url(#noseGrad2)" />
         <!-- Body -->
-        <polygon points="50,10 80,70 20,70" fill="#ff3860" />
-        <rect x="35" y="70" width="30" height="70" fill="#ffffff" />
+        <rect x="35" y="70" width="30" height="70" fill="url(#bodyGrad2)" />
+        <!-- 3D highlights and shadows -->
+        <rect x="35" y="70" width="9" height="70" fill="rgba(255,255,255,0.32)" />
+        <rect x="56" y="70" width="9" height="70" fill="rgba(0,0,0,0.32)" />
         <!-- Fins -->
-        <polygon points="20,70 35,110 20,110" fill="#ffa500" />
-        <polygon points="80,70 65,110 80,110" fill="#ffa500" />
+        <polygon points="20,70 35,110 20,110" fill="url(#finGrad2)" />
+        <polygon points="80,70 65,110 80,110" fill="url(#finGrad2)" />
         <!-- Window -->
         <circle cx="50" cy="100" r="10" fill="#00c2cb" />
         <!-- Flame -->
-        <polygon points="35,140 50,190 65,140" fill="#ffd700" />
+        <polygon points="35,140 50,190 65,140" fill="url(#flameGrad2)" />
       </svg>
     </div>
   </section>

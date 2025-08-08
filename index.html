@@ -1,241 +1,246 @@
 <!--
-  Redesigned GalacticBonk landing page
+  GalacticBonk — Interstellar Meme Journey
 
-  This single‑page application presents the core information about the
-  $GBONK token using a futuristic galactic theme. A custom starfield
-  implemented with particles.js runs behind a cosmic nebula backdrop.
-  Content animates into view using the AOS scroll library, while
-  interactive touches (e.g. copy‑to‑clipboard) are handled via
-  lightweight JavaScript. The design remains fully responsive and
-  mobile‑friendly.
+  This landing page takes visitors on a trip through the galaxy.  A custom
+  animated starfield with comets, supernovae and a rocket launch is drawn
+  entirely in CSS and JavaScript.  Each section snaps into place as you
+  scroll, with content fading and sliding in like planets entering view.
+
+  Built with accessibility in mind: semantic markup, ARIA labels for
+  navigation, alt text for icons and high‑contrast colours.  The design
+  remains responsive from mobile to desktop.
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GalacticBonk – The Meme Token That Bonks the Cosmos</title>
-  <!-- Fonts: Orbitron for headings, Inter for body copy -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-  <!-- AOS for scroll animations -->
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-  <!-- Chart.js for the tokenomics donut chart -->
+  <title>GalacticBonk – Journey Through the Cosmos</title>
+  <!-- Google Fonts: Bangers for meme‑style headings, Inter for body copy -->
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- Chart.js for the tokenomics chart -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- particles.js for the animated starfield -->
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <!-- Main stylesheet -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Starfield container.  Particles.js will inject the canvas into this div -->
-  <div id="particles-js"></div>
-  <!-- Site header and navigation -->
+  <!-- Persistent animated starfield and cosmic elements.  The starfield sits
+       behind everything else so that the journey feels continuous. -->
+  <div id="starfield" aria-hidden="true"></div>
+
+  <!-- Header with navigation.  A skip link for accessibility allows keyboard
+       users to bypass repeated content. -->
+  <a href="#hero" class="skip-link">Skip to content</a>
   <header class="site-header">
     <div class="container nav-flex">
-      <a href="#hero" class="logo-link">
+      <a href="#hero" class="logo-link" aria-label="GalacticBonk home">
         <img src="assets/icon.png" alt="GalacticBonk mascot" class="logo" />
         <span class="logo-text">G‑Bonk</span>
       </a>
-      <nav class="nav-menu">
-        <a href="#buy">Buy</a>
-        <a href="#about">About</a>
-        <a href="#tokenomics">Tokenomics</a>
-        <a href="#roadmap">Roadmap</a>
-        <a href="#how">How to Buy</a>
-        <a href="#community">Community</a>
+      <nav class="nav-menu" aria-label="Main navigation">
+        <button id="menu-toggle" class="menu-toggle" aria-expanded="false" aria-controls="primary-menu">☰</button>
+        <ul id="primary-menu" class="menu-list">
+          <li><a href="#buy">Buy</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#tokenomics">Tokenomics</a></li>
+          <li><a href="#roadmap">Roadmap</a></li>
+          <li><a href="#how">How to Buy</a></li>
+          <li><a href="#community">Community</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
       </nav>
     </div>
   </header>
-  <!-- Hero section with cosmic backdrop and animated rocket -->
-  <section id="hero" class="hero">
-    <div class="hero-content" data-aos="fade-up">
+
+  <!-- Hero section: introduces the coin with a rocket launch animation and
+       call‑to‑action.  The rocket SVG is defined inline so it can be styled
+       and animated easily. -->
+  <section id="hero" class="section hero">
+    <!-- The hero content is visible from the start.  Add the 'visible' class
+         so intersection observer will not hide it on initial load. -->
+    <div class="section-inner visible" data-animate>
       <h1 class="hero-title">Galactic Bonk</h1>
-      <p class="hero-tagline">From zero to galaxy, our dog leads the bonk to the moon!</p>
-      <a href="#buy" class="cta-button">BONK 🚀</a>
+      <p class="hero-tagline">Bonk your way through the cosmos with our community of degens!</p>
+      <a href="#buy" class="cta-button">Buy $GBONK</a>
     </div>
-    <!-- Animated rocket blasting off -->
-    <!-- Floating mascot on the left side to reinforce brand identity -->
-    <div class="mascot-wrapper">
-      <img src="assets/icon.png" alt="Bonk mascot" class="mascot" />
-    </div>
-    <!-- Animated rocket blasting off on the right side -->
-    <div class="rocket-wrapper">
-      <img src="assets/rocket.png" alt="Rocket launching" class="rocket" />
+    <!-- Rocket blasting off; the path draws a simple meme rocket with fins
+         and flame.  It is animated via CSS to fly upward diagonally. -->
+    <div class="rocket-container" aria-hidden="true">
+      <svg viewBox="0 0 100 200" class="rocket-svg">
+        <!-- Body of rocket -->
+        <polygon points="50,10 80,70 20,70" fill="#ff3860" />
+        <rect x="35" y="70" width="30" height="70" fill="#ffffff" />
+        <!-- Fins -->
+        <polygon points="20,70 35,110 20,110" fill="#ffa500" />
+        <polygon points="80,70 65,110 80,110" fill="#ffa500" />
+        <!-- Window -->
+        <circle cx="50" cy="100" r="10" fill="#00c2cb" />
+        <!-- Flame -->
+        <polygon points="35,140 50,190 65,140" fill="#ffd700" />
+      </svg>
     </div>
   </section>
-  <!-- About section -->
-  <section id="about" class="section" data-aos="fade-up">
-    <div class="container">
+
+  <!-- About section: introduces the mission. -->
+  <section id="about" class="section about">
+    <div class="section-inner" data-animate>
       <h2 class="section-title">About</h2>
       <p class="section-text">
-        G‑Bonk is a Solana‑powered meme‑coin built by and for our community of interstellar degens. We're not just
-        chasing candles – our mission is to build a vibrant ecosystem where memes meet real utility. From fun
-        airdrops and staking rewards to upcoming products like G‑Trade and G‑Bank, every bonker can take part in the
-        journey. Our dog mascot doesn’t just point at the moon – he brings us there.
+        G‑Bonk is a Solana‑powered meme‑coin built by and for our community of interstellar degens.  We're not just chasing candles – our mission is to build a vibrant ecosystem where memes meet real utility.  From fun airdrops and staking rewards to upcoming products like G‑Trade and G‑Bank, every bonker can take part in the journey.  Our dog mascot doesn’t just point at the moon – he brings us there.
       </p>
     </div>
+    <!-- Supernova flash; an expanding glowing orb triggered via CSS. -->
+    <div class="supernova" aria-hidden="true"></div>
   </section>
-  <!-- Buy section with quick links to DEX tools -->
-  <section id="buy" class="section" data-aos="fade-up">
-    <div class="container">
+
+  <!-- Buy section: quick links to DEX tools and wallet connect. -->
+  <section id="buy" class="section buy">
+    <div class="section-inner" data-animate>
       <h2 class="section-title">Buy $GBONK</h2>
-      <p class="section-text">How to ape in under 60 seconds. Pick your portal and bonk away!</p>
+      <p class="section-text">How to ape in under 60 seconds.  Pick your portal and bonk away!</p>
       <button id="connect-wallet" class="wallet-button">Connect Wallet</button>
-      <p id="wallet-address" class="wallet-status"></p>
+      <p id="wallet-address" class="wallet-status" aria-live="polite"></p>
       <div class="card-grid">
         <a href="https://dexscreener.com/solana/AjdCzXwien2FmTx3GDZeA6YX34A6rzhQCCZXSa7tqXJ4" target="_blank" class="info-card">
           <h3>Dexscreener</h3>
-          <p>Chart & trade on Dexscreener.</p>
+          <p>Chart &amp; trade on Dexscreener.</p>
         </a>
         <a href="https://www.dextools.io/app/en/solana/pair-explorer/AjdCzXwien2FmTx3GDZeA6YX34A6rzhQCCZXSa7tqXJ4" target="_blank" class="info-card">
           <h3>DexTools</h3>
-          <p>Explore liquidity & trade on DexTools.</p>
+          <p>Explore liquidity &amp; trade on DexTools.</p>
         </a>
       </div>
     </div>
   </section>
-  <!-- Tokenomics section with donut chart -->
-  <section id="tokenomics" class="section" data-aos="fade-up">
-    <div class="container">
+
+  <!-- Tokenomics section: donut chart for token distribution. -->
+  <section id="tokenomics" class="section tokenomics">
+    <div class="section-inner" data-animate>
       <h2 class="section-title">Tokenomics</h2>
       <div class="chart-container">
         <canvas id="tokenChart" width="300" height="300" aria-label="Token distribution chart" role="img"></canvas>
       </div>
       <ul class="token-list">
         <li><strong>47 % circulating (~407 M)</strong> – tokens held by the community, free to fly through the galaxy.</li>
-        <li><strong>23 % treasury & liquidity (~199 M)</strong> – locked to support DEX listings and long‑term stability.</li>
-        <li><strong>17 % team & development (~147 M)</strong> – powering ongoing dev, staking and the build‑out of G‑Trade and G‑Bank.</li>
+        <li><strong>23 % treasury &amp; liquidity (~199 M)</strong> – locked to support DEX listings and long‑term stability.</li>
+        <li><strong>17 % team &amp; development (~147 M)</strong> – powering ongoing dev, staking and the build‑out of G‑Trade and G‑Bank.</li>
         <li><strong>13 % burned forever (~112 M)</strong> – sent into the black hole, gone but never forgotten.</li>
       </ul>
     </div>
+    <!-- Comets streaking across this section. -->
+    <div class="comet-layer" aria-hidden="true"></div>
   </section>
-  <!-- How to buy section explaining the steps and offering copy to clipboard -->
-  <section id="how" class="section" data-aos="fade-up">
-    <div class="container">
+
+  <!-- Roadmap section: timeline of future milestones. -->
+  <section id="roadmap" class="section roadmap">
+    <div class="section-inner" data-animate>
+      <h2 class="section-title">Roadmap</h2>
+      <div class="timeline">
+        <div class="timeline-item"><h3>Q3 2025</h3><p>Token launch &amp; community bonk‑off.</p></div>
+        <div class="timeline-item"><h3>Q4 2025</h3><p>Staking program goes live – earn rewards by locking your $GBONK.</p></div>
+        <div class="timeline-item"><h3>Q1 2026</h3><p>Launch of G‑Trade, an exchange platform using fees in G‑Bonk.</p></div>
+        <div class="timeline-item"><h3>Q3 2026</h3><p>Launch of G‑Bank – the first fiat &amp; crypto bank for bonkers.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How to Buy section: step‑by‑step instructions with copy to clipboard. -->
+  <section id="how" class="section how">
+    <div class="section-inner" data-animate>
       <h2 class="section-title">How to Buy</h2>
       <p class="section-text">To join the bonk crew you'll need a Solana wallet and a tiny bit of SOL for fees. Follow these steps:</p>
       <div class="steps-grid">
-        <div class="step">
-          <h3>1. Get a Wallet</h3>
-          <p>Install a Solana wallet like Phantom or Solflare. This will hold your $GBONK and let you interact with dApps.</p>
-        </div>
-        <div class="step">
-          <h3>2. Fund with SOL</h3>
-          <p>Purchase a small amount of SOL on an exchange and transfer it to your wallet. You'll use SOL to cover transaction fees.</p>
-        </div>
-        <div class="step">
-          <h3>3. Swap for $GBONK</h3>
-          <p>Head over to Dexscreener or DexTools and swap your SOL for $GBONK using the pair address below.</p>
-        </div>
-        <div class="step">
-          <h3>4. HODL & Stake</h3>
-          <p>Congratulations! You're now part of the bonk tribe. Watch for staking launches and future airdrops.</p>
-        </div>
+        <div class="step"><h3>1. Get a Wallet</h3><p>Install a Solana wallet like Phantom or Solflare.  This will hold your $GBONK and let you interact with dApps.</p></div>
+        <div class="step"><h3>2. Fund with SOL</h3><p>Purchase a small amount of SOL on an exchange and transfer it to your wallet.  You'll use SOL to cover transaction fees.</p></div>
+        <div class="step"><h3>3. Swap for $GBONK</h3><p>Head over to Dexscreener or DexTools and swap your SOL for $GBONK using the pair address below.</p></div>
+        <div class="step"><h3>4. HODL &amp; Stake</h3><p>Congratulations! You're now part of the bonk tribe.  Watch for staking launches and future airdrops.</p></div>
       </div>
       <div class="contract-address">
         <code id="contract-address">AjdCzXwien2FmTx3GDZeA6YX34A6rzhQCCZXSa7tqXJ4</code>
         <button id="copy-address" class="copy-button">Copy address</button>
-        <span id="copy-status" class="copy-status"></span>
+        <span id="copy-status" class="copy-status" aria-live="polite"></span>
       </div>
     </div>
   </section>
-  <!-- Roadmap section -->
-  <section id="roadmap" class="section" data-aos="fade-up">
-    <div class="container">
-      <h2 class="section-title">Roadmap</h2>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-content">
-            <h3>Q3 2025</h3>
-            <p>Token launch & community bonk‑off.</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-content">
-            <h3>Q4 2025</h3>
-            <p>Staking program goes live – earn rewards by locking your $GBONK.</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-content">
-            <h3>Q1 2026</h3>
-            <p>Launch of G‑Trade, an exchange platform using fees in G‑Bonk.</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-content">
-            <h3>Q3 2026</h3>
-            <p>Launch of G‑Bank – the first fiat & crypto bank for bonkers.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- Community section with social links and sample posts -->
-  <section id="community" class="section" data-aos="fade-up">
-    <div class="container">
+
+  <!-- Community section: social links and sample tweets (updated in JS). -->
+  <section id="community" class="section community">
+    <div class="section-inner" data-animate>
       <h2 class="section-title">Join the Community</h2>
       <div class="social-links">
-        <a href="https://x.com/GalacticBonk" target="_blank" aria-label="X (Twitter)"><img src="assets/x_white.png" alt="X" /></a>
-        <a href="https://t.me/GalacticBonk" target="_blank" aria-label="Telegram"><img src="assets/telegram.png" alt="Telegram" /></a>
+        <a href="https://x.com/GalacticBonk" target="_blank" aria-label="X (Twitter)"><img src="assets/x_white.png" alt="X icon" /></a>
+        <a href="https://t.me/GalacticBonk" target="_blank" aria-label="Telegram"><img src="assets/telegram.png" alt="Telegram icon" /></a>
         <a href="whitepaper.html" target="_blank" class="whitepaper-link">Whitepaper</a>
       </div>
-      <ul id="tweet-feed" class="tweet-feed"></ul>
+      <ul id="tweet-feed" class="tweet-feed" aria-label="Sample tweets"></ul>
     </div>
   </section>
-  <!-- FAQ section -->
-  <section id="faq" class="section" data-aos="fade-up">
-    <div class="container">
+
+  <!-- FAQ section: accordion for common questions. -->
+  <section id="faq" class="section faq">
+    <div class="section-inner" data-animate>
       <h2 class="section-title">FAQ</h2>
       <div class="faq-item">
         <button class="faq-question">What is $GBONK?</button>
         <div class="faq-answer">
-          <p>$GBONK is the native token of the GalacticBonk ecosystem, minted on the Solana blockchain. It powers
-            tipping, governance, staking rewards and future utility on our DEX (G‑Trade) and bank (G‑Bank). It’s
-            100 % community‑driven and has a fixed supply – no hidden mints or stealth burns.</p>
+          <p>$GBONK is the native token of the GalacticBonk ecosystem, minted on the Solana blockchain.  It powers tipping, governance, staking rewards and future utility on our DEX (G‑Trade) and bank (G‑Bank).  It’s 100 % community‑driven and has a fixed supply – no hidden mints or stealth burns.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-question">How do I hodl?</button>
         <div class="faq-answer">
-          <p>You can pick up $GBONK on Dexscreener or DexTools using a Solana wallet (like Phantom or Solflare).
-            Once you’ve swapped, store your tokens in your wallet and keep an eye out for our upcoming staking
-            program – you’ll be able to lock your $GBONK and earn yield for helping secure the galaxy.</p>
+          <p>You can pick up $GBONK on Dexscreener or DexTools using a Solana wallet (like Phantom or Solflare).  Once you’ve swapped, store your tokens in your wallet and keep an eye out for our upcoming staking program – you’ll be able to lock your $GBONK and earn yield for helping secure the galaxy.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-question">Where can I read more?</button>
         <div class="faq-answer">
-          <p>For a deep dive into our vision, roadmap and tokenomics, check out our <a href="whitepaper.html" target="_blank">whitepaper</a>.
-            It’s packed with juicy details on how we plan to bonk the galaxy.</p>
+          <p>For a deep dive into our vision, roadmap and tokenomics, check out our <a href="whitepaper.html" target="_blank">whitepaper</a>.  It’s packed with juicy details on how we plan to bonk the galaxy.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-question">How are the tokens distributed?</button>
         <div class="faq-answer">
-          <p>The G‑Bonk supply is divided into four buckets: about <strong>13 % of tokens are burned forever</strong>,
-            <strong>23 %</strong> are locked in treasury and liquidity pools to stabilise price and support DEX listings,
-            <strong>17 %</strong> go to the team and developers on a vesting schedule, and roughly <strong>47 %</strong>
-            make up the circulating supply held by the community. These allocations ensure long‑term sustainability and
-            align incentives between holders, builders and the ecosystem.</p>
+          <p>The G‑Bonk supply is divided into four buckets: about <strong>13 % of tokens are burned forever</strong>, <strong>23 %</strong> are locked in treasury and liquidity pools to stabilise price and support DEX listings, <strong>17 %</strong> go to the team and developers on a vesting schedule, and roughly <strong>47 %</strong> make up the circulating supply held by the community.  These allocations ensure long‑term sustainability and align incentives between holders, builders and the ecosystem.</p>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Landing section: conclusion of the journey with a rocket touching down
+       on a distant world.  The planet horizon and rocket are purely
+       decorative but add a sense of completion. -->
+  <section id="landing" class="section landing">
+    <div class="section-inner visible" data-animate>
+      <h2 class="section-title">End of the Journey</h2>
+      <p class="section-text">You've travelled the cosmos with G‑Bonk.  Time to bonk, stake, and chill on this faraway world.</p>
+    </div>
+    <!-- Planet horizon and landing rocket (decorative) -->
+    <div class="planet" aria-hidden="true"></div>
+    <div class="landing-container" aria-hidden="true">
+      <svg viewBox="0 0 100 200" class="rocket-svg">
+        <!-- Body -->
+        <polygon points="50,10 80,70 20,70" fill="#ff3860" />
+        <rect x="35" y="70" width="30" height="70" fill="#ffffff" />
+        <!-- Fins -->
+        <polygon points="20,70 35,110 20,110" fill="#ffa500" />
+        <polygon points="80,70 65,110 80,110" fill="#ffa500" />
+        <!-- Window -->
+        <circle cx="50" cy="100" r="10" fill="#00c2cb" />
+        <!-- Flame -->
+        <polygon points="35,140 50,190 65,140" fill="#ffd700" />
+      </svg>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <p>© 2025 Galactic Bonk – All rights reserved.</p>
     </div>
   </footer>
+
   <!-- Main script -->
   <script src="main.js" type="module"></script>
-  <!-- Initialise AOS after the content has loaded -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    AOS.init({
-      once: true,
-    });
-  </script>
 </body>
 </html>

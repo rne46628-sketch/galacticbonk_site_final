@@ -16,7 +16,8 @@
   /* Muted text colour used for paragraphs and secondary labels.  Lightened
      from the previous value to improve contrast against the dark
      starfield.  A subtle lavender hue keeps with the galactic theme. */
-  --color-muted: #c5c5de;
+  /* Muted text colour for secondary copy.  Lightened for better contrast. */
+  --color-muted: #d1d1ea;
   --font-heading: 'Bangers', cursive;
   --font-body: 'Inter', sans-serif;
   --section-height: 100vh;
@@ -269,6 +270,29 @@ a:hover {
   height: 100%;
 }
 
+/* Animate the rocket flame.  The flame polygon scales and stretches
+   slightly to give the impression of flickering heat.  Opacity also
+   oscillates subtly so the flame never appears static. */
+.rocket-svg .flame {
+  transform-origin: 50% 0%;
+  animation: flameFlicker 0.8s infinite ease-in-out;
+}
+
+@keyframes flameFlicker {
+  0% {
+    transform: scaleY(1) scaleX(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleY(0.6) scaleX(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scaleY(1) scaleX(1);
+    opacity: 1;
+  }
+}
+
 /* Sections */
 .section {
   position: relative;
@@ -286,7 +310,7 @@ a:hover {
   text-align: center;
   /* Give each section a semi‑transparent panel with a backdrop blur to
      dramatically improve readability against the animated starfield. */
-  background: rgba(10, 10, 35, 0.75);
+  background: rgba(10, 10, 35, 0.8);
   backdrop-filter: blur(8px);
   padding: 40px 30px;
   border-radius: 10px;
@@ -319,31 +343,32 @@ a:hover {
   /* Increase opacity slightly for better readability against the animated
      backdrop.  Each section uses a different tint to help separate
      content while still letting the starfield show through. */
-  background: rgba(0, 0, 50, 0.8);
+  /* Increase opacity slightly for better readability */
+  background: rgba(0, 0, 50, 0.85);
 }
 .buy {
-  background: rgba(0, 10, 60, 0.8);
+  background: rgba(0, 10, 60, 0.85);
 }
 .tokenomics {
-  background: rgba(0, 20, 70, 0.8);
+  background: rgba(0, 20, 70, 0.85);
 }
 .roadmap {
-  background: rgba(20, 0, 60, 0.8);
+  background: rgba(20, 0, 60, 0.85);
 }
 .how {
-  background: rgba(30, 0, 50, 0.8);
+  background: rgba(30, 0, 50, 0.85);
 }
 .community {
-  background: rgba(40, 0, 40, 0.8);
+  background: rgba(40, 0, 40, 0.85);
 }
 .faq {
-  background: rgba(50, 0, 30, 0.8);
+  background: rgba(50, 0, 30, 0.85);
 }
 
 /* Landing section styles.  The closing scene features a planet horizon and a
    rocket descending to symbolise the end of the journey. */
 .landing {
-  background: rgba(60, 0, 80, 0.8);
+  background: rgba(60, 0, 80, 0.85);
 }
 .planet {
   position: absolute;

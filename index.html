@@ -114,7 +114,10 @@
         <!-- Window remains a solid colour -->
         <circle cx="50" cy="100" r="10" fill="#00c2cb" />
         <!-- Flame with gradient for depth -->
-        <polygon points="35,140 50,190 65,140" fill="url(#flameGrad)" />
+        <!-- The flame polygon uses a class so we can animate it via CSS.  A simple
+             flicker animation makes the flame pulse and stretch, giving the
+             rocket a more dynamic, cartoonish look. -->
+        <polygon class="flame" points="35,140 50,190 65,140" fill="url(#flameGrad)" />
       </svg>
     </div>
   </section>
@@ -291,7 +294,7 @@
         <!-- Window -->
         <circle cx="50" cy="100" r="10" fill="#00c2cb" />
         <!-- Flame -->
-        <polygon points="35,140 50,190 65,140" fill="url(#flameGrad2)" />
+        <polygon class="flame" points="35,140 50,190 65,140" fill="url(#flameGrad2)" />
       </svg>
     </div>
   </section>

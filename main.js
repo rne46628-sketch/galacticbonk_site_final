@@ -2,44 +2,149 @@
 
 // Immediately invoked function to avoid polluting the global scope
 (() => {
-  // Create star elements and animate their twinkle
-  function createStars() {
-    const starfield = document.getElementById('starfield');
-    if (!starfield) return;
-    const totalStars = 350;
-    for (let i = 0; i < totalStars; i++) {
-      const star = document.createElement('div');
-      star.classList.add('star');
-      star.style.top = Math.random() * 100 + '%';
-      star.style.left = Math.random() * 100 + '%';
-      // randomise size to add depth
-      const size = 2 + Math.random() * 3;
-      star.style.width = `${size}px`;
-      star.style.height = `${size}px`;
-      // Vary animation delay and duration for randomness
-      const delay = Math.random() * 8;
-      const duration = 6 + Math.random() * 6;
-      star.style.animationDelay = `${delay}s`;
-      star.style.animationDuration = `${duration}s`;
-      starfield.appendChild(star);
+  // Initialise the canvas‑based universe.  Rather than creating
+  // hundreds of DOM elements for stars and comets, we draw
+  // everything on a single canvas.  This approach is significantly
+  // faster and allows richer animations like falling stars, comets
+  // streaking across the view and supernova explosions.
+  function initUniverse() {
+    const canvas = document.getElementById('universe');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h;
+    let stars = [];
+    let comets = [];
+    let supernovas = [];
+
+    // Helper to create a batch of stars
+    function spawnStars(num) {
+      for (let i = 0; i < num; i++) {
+        stars.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          radius: 0.4 + Math.random() * 1.6,
+          // Increase speed for visible movement
+          speed: 0.4 + Math.random() * 0.6,
+        });
+      }
     }
+
+    // Create a single comet with random trajectory
+    function spawnComet() {
+      const angle = -(Math.PI / 4 + Math.random() * Math.PI / 4);
+      const speed = 0.6 + Math.random() * 0.6;
+      return {
+        x: Math.random() * w + w,
+        y: Math.random() * h * 0.5,
+        vx: speed * Math.cos(angle),
+        vy: speed * Math.sin(angle),
+        life: 0,
+        maxLife: 300 + Math.random() * 200,
+        size: 2 + Math.random() * 2,
+      };
+    }
+
+    // Create a supernova effect
+    function spawnSupernova() {
+      return {
+        x: Math.random() * w * 0.8 + w * 0.1,
+        y: Math.random() * h * 0.6 + h * 0.2,
+        radius: 0,
+        maxRadius: 80 + Math.random() * 120,
+        alpha: 1,
+      };
+    }
+
+    // Handle resizing of the canvas
+    function onResize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      // reset the arrays and respawn
+      stars = [];
+      spawnStars(250);
+    }
+
+    // Draw the universe on each frame
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      // Draw stars
+      stars.forEach((s) => {
+        s.y += s.speed;
+        if (s.y > h) {
+          s.y = 0;
+          s.x = Math.random() * w;
+        }
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      // Draw comets
+      comets.forEach((c, index) => {
+        c.x += -c.vx;
+        c.y += c.vy;
+        c.life++;
+        // Draw tail as a glow gradient
+        const gradient = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.size * 12);
+        gradient.addColorStop(0, 'rgba(255,255,255,0.9)');
+        gradient.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.size * 12, 0, Math.PI * 2);
+        ctx.fill();
+        // Remove when off screen or expired
+        if (c.life > c.maxLife || c.x < -c.size * 12 || c.y > h + c.size * 12) {
+          comets.splice(index, 1);
+        }
+      });
+      // Draw supernovas
+      supernovas.forEach((s, index) => {
+        s.radius += 2;
+        s.alpha -= 0.015;
+        ctx.strokeStyle = `rgba(255,255,255,${s.alpha})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.stroke();
+        if (s.radius > s.maxRadius || s.alpha <= 0) {
+          supernovas.splice(index, 1);
+        }
+      });
+      requestAnimationFrame(draw);
+    }
+
+    onResize();
+    window.addEventListener('resize', onResize);
+    // Spawn comets periodically
+    setInterval(() => {
+      // Limit number of comets at once to avoid overload
+      if (comets.length < 6) comets.push(spawnComet());
+    }, 5000);
+    // Spawn supernovas periodically
+    setInterval(() => {
+      supernovas.push(spawnSupernova());
+    }, 10000);
+    draw();
   }
 
-  // Create comets that fly diagonally across the screen
-  function createComets() {
-    const starfield = document.getElementById('starfield');
-    if (!starfield) return;
-    const totalComets = 10;
-    for (let i = 0; i < totalComets; i++) {
-      const comet = document.createElement('div');
-      comet.classList.add('comet');
-      comet.style.top = Math.random() * 100 + '%';
-      comet.style.left = (50 + Math.random() * 50) + '%';
-      // Stagger each comet's animation
-      const delay = Math.random() * 12;
-      comet.style.animationDelay = `${delay}s`;
-      starfield.appendChild(comet);
-    }
+  // FAQ toggle logic: expand/collapse answers on click
+  function initFAQ() {
+    document.querySelectorAll('.faq-item').forEach((item) => {
+      const question = item.querySelector('.faq-question');
+      const answer = item.querySelector('.faq-answer');
+      if (!question || !answer) return;
+      question.addEventListener('click', () => {
+        const isOpen = item.classList.toggle('open');
+        // Toggle ARIA attribute for accessibility
+        question.setAttribute('aria-expanded', String(isOpen));
+        // Animate the answer's height
+        if (isOpen) {
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+        } else {
+          answer.style.maxHeight = null;
+        }
+      });
+    });
   }
 
   // Intersection observer to reveal sections when scrolled into view
@@ -161,13 +266,13 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    createStars();
-    createComets();
+    initUniverse();
     initScrollAnimations();
     initMenuToggle();
     initChart();
     populateTweets();
     initCopyAddress();
     initWalletConnect();
+    initFAQ();
   });
 })();

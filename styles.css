@@ -159,15 +159,15 @@ a:hover {
 }
 
 /* Starfield and cosmic effects */
-/* Starfield container.  Positioned behind everything else. */
-#starfield {
+/* Universe canvas.  Draws the animated stars, comets and supernovae.
+   Positioned behind everything else, it covers the entire viewport. */
+#universe {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  z-index: -2;
+  z-index: -3;
   pointer-events: none;
 }
 /* Individual star styling.  Slightly larger and brighter than before
@@ -292,31 +292,32 @@ a:hover {
   background: radial-gradient(circle at center, rgba(255,255,255,0.05), transparent 70%);
 }
 .about {
-  background: rgba(0, 0, 50, 0.4);
+  /* Increase background opacity for better contrast */
+  background: rgba(0, 0, 50, 0.6);
 }
 .buy {
-  background: rgba(0, 10, 60, 0.4);
+  background: rgba(0, 10, 60, 0.6);
 }
 .tokenomics {
-  background: rgba(0, 20, 70, 0.4);
+  background: rgba(0, 20, 70, 0.6);
 }
 .roadmap {
-  background: rgba(20, 0, 60, 0.4);
+  background: rgba(20, 0, 60, 0.6);
 }
 .how {
-  background: rgba(30, 0, 50, 0.4);
+  background: rgba(30, 0, 50, 0.6);
 }
 .community {
-  background: rgba(40, 0, 40, 0.4);
+  background: rgba(40, 0, 40, 0.6);
 }
 .faq {
-  background: rgba(50, 0, 30, 0.4);
+  background: rgba(50, 0, 30, 0.6);
 }
 
 /* Landing section styles.  The closing scene features a planet horizon and a
    rocket descending to symbolise the end of the journey. */
 .landing {
-  background: rgba(60, 0, 80, 0.4);
+  background: rgba(60, 0, 80, 0.6);
 }
 .planet {
   position: absolute;
@@ -401,6 +402,10 @@ a:hover {
   max-width: 300px;
   height: 300px;
   margin: 20px auto;
+  /* Add a subtle backdrop for contrast */
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 10px;
 }
 .token-list {
   text-align: left;
@@ -563,6 +568,12 @@ a:hover {
   background: rgba(255,255,255,0.03);
   padding: 0 12px;
   transition: max-height 0.5s ease;
+}
+
+/* When a FAQ item is open, allow the answer to expand fully.  This
+   prevents the need for inline JS to set explicit heights. */
+.faq-item.open .faq-answer {
+  max-height: 800px;
 }
 .faq-answer p {
   padding: 12px 0;

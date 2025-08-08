@@ -24,9 +24,11 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Persistent animated starfield and cosmic elements.  The starfield sits
-       behind everything else so that the journey feels continuous. -->
-  <div id="starfield" aria-hidden="true"></div>
+  <!-- Persistent animated starfield and cosmic elements.  We now draw
+       everything on a canvas to improve performance and allow richer
+       animations (falling stars, comets and supernovae).  The canvas is
+       positioned behind all other content. -->
+  <canvas id="universe" aria-hidden="true"></canvas>
 
   <!-- Header with navigation.  A skip link for accessibility allows keyboard
        users to bypass repeated content. -->
@@ -181,25 +183,25 @@
     <div class="section-inner" data-animate>
       <h2 class="section-title">FAQ</h2>
       <div class="faq-item">
-        <button class="faq-question">What is $GBONK?</button>
+        <button class="faq-question" aria-expanded="false">What is $GBONK?</button>
         <div class="faq-answer">
           <p>$GBONK is the native token of the GalacticBonk ecosystem, minted on the Solana blockchain.  It powers tipping, governance, staking rewards and future utility on our DEX (G‑Trade) and bank (G‑Bank).  It’s 100 % community‑driven and has a fixed supply – no hidden mints or stealth burns.</p>
         </div>
       </div>
       <div class="faq-item">
-        <button class="faq-question">How do I hodl?</button>
+        <button class="faq-question" aria-expanded="false">How do I hodl?</button>
         <div class="faq-answer">
           <p>You can pick up $GBONK on Dexscreener or DexTools using a Solana wallet (like Phantom or Solflare).  Once you’ve swapped, store your tokens in your wallet and keep an eye out for our upcoming staking program – you’ll be able to lock your $GBONK and earn yield for helping secure the galaxy.</p>
         </div>
       </div>
       <div class="faq-item">
-        <button class="faq-question">Where can I read more?</button>
+        <button class="faq-question" aria-expanded="false">Where can I read more?</button>
         <div class="faq-answer">
           <p>For a deep dive into our vision, roadmap and tokenomics, check out our <a href="whitepaper.html" target="_blank">whitepaper</a>.  It’s packed with juicy details on how we plan to bonk the galaxy.</p>
         </div>
       </div>
       <div class="faq-item">
-        <button class="faq-question">How are the tokens distributed?</button>
+        <button class="faq-question" aria-expanded="false">How are the tokens distributed?</button>
         <div class="faq-answer">
           <p>The G‑Bonk supply is divided into four buckets: about <strong>13 % of tokens are burned forever</strong>, <strong>23 %</strong> are locked in treasury and liquidity pools to stabilise price and support DEX listings, <strong>17 %</strong> go to the team and developers on a vesting schedule, and roughly <strong>47 %</strong> make up the circulating supply held by the community.  These allocations ensure long‑term sustainability and align incentives between holders, builders and the ecosystem.</p>
         </div>
@@ -241,6 +243,6 @@
   </footer>
 
   <!-- Main script -->
-  <script src="main.js" type="module"></script>
+  <script src="main.js" defer></script>
 </body>
 </html>

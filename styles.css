@@ -270,6 +270,31 @@ a:hover {
   height: 100%;
 }
 
+/* Mascot dog styling.  The dog is positioned off‑screen to the left
+   initially and moves across the viewport as the user scrolls.  A
+   perspective is set to enable 3D rotation along the Y‑axis.  The
+   container ignores pointer events so it doesn’t interfere with
+   interactions. */
+.dog-container {
+  position: fixed;
+  top: 50%;
+  left: -150px; /* start off‑screen */
+  width: 150px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 30;
+  perspective: 800px;
+  will-change: transform;
+}
+
+.dog-img {
+  width: 100%;
+  height: auto;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+}
+
 /* Animate the rocket flame.  The flame polygon scales and stretches
    slightly to give the impression of flickering heat.  Opacity also
    oscillates subtly so the flame never appears static. */

@@ -361,6 +361,7 @@
     initFAQ();
     initRocketScroll();
     initProgressBar();
+    initDogScroll();
   });
 
   // Animate the hero rocket based on scroll position rather than a fixed
@@ -394,6 +395,36 @@
       const rotate = -20 * progress + Math.sin(progress * Math.PI * 2) * 8;
       heroRocket.style.transform = `translate(${translateX}px, ${translateY}px) rotate(${rotate}deg)`;
     });
+  }
+
+  // Animate the G‑Bonk dog as the user scrolls.  The dog starts
+  // off‑screen to the left and moves horizontally across the viewport
+  // over the course of the page scroll.  A gentle vertical bobbing
+  // motion and a 3D yaw rotation add life to the mascot.  The dog’s
+  // journey is independent of the rocket and uses overall page scroll
+  // percentage to compute its position.
+  function initDogScroll() {
+    const dog = document.querySelector('.dog-container');
+    if (!dog) return;
+    const updateDog = () => {
+      const doc = document.documentElement;
+      const scrollTop = window.pageYOffset || doc.scrollTop;
+      const scrollHeight = doc.scrollHeight - doc.clientHeight;
+      const percent = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
+      // Horizontal travel: move from off‑screen left to off‑screen right
+      const viewportWidth = window.innerWidth;
+      const totalDistance = viewportWidth + 300; // 150px off‑screen on each side
+      const translateX = percent * totalDistance - 150;
+      // Vertical bobbing: oscillate up and down around 50% viewport height
+      const bob = Math.sin(percent * Math.PI * 4) * 50;
+      const translateY = bob;
+      // 3D yaw rotation: tilt as it moves
+      const rotateY = Math.sin(percent * Math.PI * 6) * 20; // degrees
+      dog.style.transform = `translate(${translateX}px, calc(-50% + ${translateY}px)) rotateY(${rotateY}deg)`;
+    };
+    updateDog();
+    window.addEventListener('scroll', updateDog);
+    window.addEventListener('resize', updateDog);
   }
 
   // Update the scroll progress indicator based on page scroll position.  The

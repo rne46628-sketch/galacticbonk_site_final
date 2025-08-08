@@ -447,6 +447,7 @@
     initRocketScroll();
     initProgressBar();
     initDogScroll();
+    initDog3D();
   });
 
   // Animate the hero rocket based on scroll position rather than a fixed
@@ -542,5 +543,154 @@
     update();
     window.addEventListener('scroll', update);
     window.addEventListener('resize', update);
+  }
+
+  // Initialise a 3D rendering of the G‑Bonk mascot using Three.js.
+  // This function constructs a simple low‑poly dog composed of
+  // spheres, cylinders and cones to approximate the character’s
+  // silhouette.  A transparent helmet surrounds the head to evoke
+  // an astronaut suit.  The model is lit with ambient and directional
+  // lights to give depth and shading.  On each animation frame the
+  // dog’s position, rotation and tail wag are updated based on scroll
+  // progress and time, then the scene is rendered.  If Three.js is
+  // unavailable or the container element is missing, the function exits.
+  function initDog3D() {
+    const container = document.getElementById('dog3d-container');
+    // Ensure Three.js is loaded and a container exists
+    if (!container || typeof THREE === 'undefined') return;
+    // Create the renderer
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio || 1);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.domElement.style.pointerEvents = 'none';
+    container.appendChild(renderer.domElement);
+    // Create the scene
+    const scene = new THREE.Scene();
+    // Camera with perspective projection; positioned back to view the dog
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 2, 12);
+    // Lighting: ambient provides base illumination; directional light simulates a sun
+    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambient);
+    const directional = new THREE.DirectionalLight(0xffffff, 0.7);
+    directional.position.set(5, 10, 7);
+    scene.add(directional);
+    // Group to hold all dog parts for easy transformation
+    const dog = new THREE.Group();
+    scene.add(dog);
+    // Body – blue sphere scaled into an ellipsoid for the spacesuit
+    const bodyGeom = new THREE.SphereGeometry(1, 32, 32);
+    const bodyMat = new THREE.MeshPhongMaterial({ color: 0x0066aa });
+    const body = new THREE.Mesh(bodyGeom, bodyMat);
+    body.scale.set(0.9, 1.2, 0.9);
+    body.position.set(0, 0, 0);
+    dog.add(body);
+    // Head – orange sphere for fur
+    const headGeom = new THREE.SphereGeometry(0.7, 32, 32);
+    const headMat = new THREE.MeshPhongMaterial({ color: 0xf5a623 });
+    const head = new THREE.Mesh(headGeom, headMat);
+    head.position.set(0, 1.5, 0);
+    dog.add(head);
+    // Muzzle – lighter sphere
+    const muzzleGeom = new THREE.SphereGeometry(0.35, 32, 32);
+    const muzzleMat = new THREE.MeshPhongMaterial({ color: 0xffd9b3 });
+    const muzzle = new THREE.Mesh(muzzleGeom, muzzleMat);
+    muzzle.position.set(0, 1.3, 0.45);
+    dog.add(muzzle);
+    // Nose – small black sphere
+    const noseGeom = new THREE.SphereGeometry(0.1, 16, 16);
+    const noseMat = new THREE.MeshPhongMaterial({ color: 0x000000 });
+    const nose = new THREE.Mesh(noseGeom, noseMat);
+    nose.position.set(0, 1.33, 0.63);
+    dog.add(nose);
+    // Eyes – two black spheres
+    const eyeGeom = new THREE.SphereGeometry(0.08, 16, 16);
+    const eyeMat = new THREE.MeshPhongMaterial({ color: 0x000000 });
+    const leftEye = new THREE.Mesh(eyeGeom, eyeMat);
+    leftEye.position.set(-0.22, 1.5, 0.52);
+    const rightEye = leftEye.clone();
+    rightEye.position.set(0.22, 1.5, 0.52);
+    dog.add(leftEye);
+    dog.add(rightEye);
+    // Ears – two orange cones
+    const earGeom = new THREE.ConeGeometry(0.2, 0.6, 16);
+    const earMat = new THREE.MeshPhongMaterial({ color: 0xf5a623 });
+    const leftEar = new THREE.Mesh(earGeom, earMat);
+    leftEar.position.set(-0.35, 2.05, 0);
+    leftEar.rotation.set(Math.PI / 2.8, 0, Math.PI / 9);
+    const rightEar = leftEar.clone();
+    rightEar.position.set(0.35, 2.05, 0);
+    rightEar.rotation.z = -Math.PI / 9;
+    dog.add(leftEar);
+    dog.add(rightEar);
+    // Arms – cylinders sticking out of the body
+    const armGeom = new THREE.CylinderGeometry(0.12, 0.12, 0.6, 16);
+    const armMat = new THREE.MeshPhongMaterial({ color: 0x0066aa });
+    const leftArm = new THREE.Mesh(armGeom, armMat);
+    leftArm.position.set(-0.8, 0.3, 0);
+    leftArm.rotation.z = Math.PI / 2;
+    const rightArm = leftArm.clone();
+    rightArm.position.set(0.8, 0.3, 0);
+    dog.add(leftArm);
+    dog.add(rightArm);
+    // Legs – cylinders under the body
+    const legGeom = new THREE.CylinderGeometry(0.15, 0.15, 0.7, 16);
+    const legMat = new THREE.MeshPhongMaterial({ color: 0x0066aa });
+    const leftLeg = new THREE.Mesh(legGeom, legMat);
+    leftLeg.position.set(-0.4, -0.8, 0);
+    const rightLeg = leftLeg.clone();
+    rightLeg.position.set(0.4, -0.8, 0);
+    dog.add(leftLeg);
+    dog.add(rightLeg);
+    // Tail – cylinder pivoting at the base
+    const tailGeom = new THREE.CylinderGeometry(0.05, 0.05, 0.8, 12);
+    const tailMat = new THREE.MeshPhongMaterial({ color: 0xf5a623 });
+    const tail = new THREE.Mesh(tailGeom, tailMat);
+    // pivot so it rotates around the body end rather than the centre
+    const tailPivot = new THREE.Object3D();
+    tailPivot.position.set(0, -0.2, -0.8);
+    tail.position.set(0, 0.4, 0);
+    tail.rotation.x = Math.PI / 2;
+    tailPivot.add(tail);
+    dog.add(tailPivot);
+    // Helmet – transparent sphere encasing the head
+    const helmetGeom = new THREE.SphereGeometry(0.9, 32, 32);
+    const helmetMat = new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true, opacity: 0.1, side: THREE.DoubleSide });
+    const helmet = new THREE.Mesh(helmetGeom, helmetMat);
+    helmet.position.set(0, 1.5, 0);
+    dog.add(helmet);
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      // Scroll progress influences horizontal travel, vertical bobbing and yaw rotation
+      const doc = document.documentElement;
+      const scrollTop = window.pageYOffset || doc.scrollTop;
+      const scrollHeight = doc.scrollHeight - doc.clientHeight;
+      const percent = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+      // Horizontal travel across screen width: map to -20..20 units
+      const xRange = 20;
+      dog.position.x = (percent * 2 - 1) * xRange;
+      // Vertical bobbing: sine wave scaled to 2 units
+      dog.position.y = Math.sin(percent * Math.PI * 4) * 2;
+      // Depth oscillation: small z movement for subtle depth effect
+      dog.position.z = Math.cos(percent * Math.PI * 2) * 1.5;
+      // Rotate dog around Y axis (yaw) for playful wobble
+      dog.rotation.y = Math.sin(percent * Math.PI * 8) * 0.5;
+      // Wag tail based on time
+      const t = performance.now() * 0.005;
+      tailPivot.rotation.z = Math.sin(t * 6) * 0.6;
+      // Render scene
+      renderer.render(scene, camera);
+    }
+    animate();
+    // Resize handler keeps aspect ratio correct
+    function onResize() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', onResize);
   }
 })();

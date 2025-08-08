@@ -300,6 +300,22 @@ a:hover {
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.7)) brightness(1.15) saturate(1.1);
 }
 
+/* 3D dog container.  This fixed‑position element hosts a Three.js
+   WebGL renderer that draws the G‑Bonk mascot as a three‑dimensional
+   model.  Pointer events are disabled so the user can interact
+   normally with links and buttons beneath it.  We set a z‑index
+   slightly above the canvas but below most text so the model sits
+   between the starfield and the foreground content. */
+#dog3d-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
 /* Animate the rocket flame.  The flame polygon scales and stretches
    slightly to give the impression of flickering heat.  Opacity also
    oscillates subtly so the flame never appears static. */

@@ -30,6 +30,13 @@
        positioned behind all other content. -->
   <canvas id="universe" aria-hidden="true"></canvas>
 
+  <!-- Three.js 3D dog container.  A WebGL renderer will render the
+       G‑Bonk mascot as a low‑poly 3D model inside this fixed‑position
+       element.  We leave it empty here; it will be populated by
+       initDog3D() in the JavaScript.  Aria-hidden is set so screen
+       readers ignore decorative content. -->
+  <div id="dog3d-container" aria-hidden="true"></div>
+
   <!-- Scroll progress indicator.  This vertical bar shows how far
        through the galactic journey you have travelled.  It fills from
        bottom to top as you scroll the page.  Because it is purely
@@ -42,9 +49,9 @@
   <!-- G-Bonk mascot dog.  The dog travels alongside your scroll
        journey through the cosmos.  Its motion and 3D tilt are
        controlled via JavaScript for a dynamic companion effect. -->
-  <!-- G‑Bonk mascot dog.  Updated to use a 3D‑rendered sprite.  The image is stored
-       at the project root as `dog3d.png` so it loads correctly when
-       deployed on GitHub Pages (which flattens the file structure).  -->
+  <!-- G‑Bonk mascot dog (fallback).  This container remains for legacy
+       browsers without WebGL support.  It’s hidden via CSS when the
+       3D model is active. -->
   <div class="dog-container" aria-hidden="true">
     <img src="dog3d.png" alt="G-Bonk Dog" class="dog-img" />
   </div>
@@ -316,6 +323,10 @@
     </div>
   </footer>
 
+  <!-- Three.js library for rendering the 3D dog.  Loaded from a CDN so
+       it is cached across sites.  We include it before our main
+       script to make the global THREE namespace available. -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
   <!-- Main script -->
   <script src="main.js" defer></script>
 </body>

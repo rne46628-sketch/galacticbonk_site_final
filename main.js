@@ -442,7 +442,7 @@
     initChart();
     populateTweets();
     initCopyAddress();
-    initWalletConnect();
+    // initWalletConnect(); // Disabled since wallet connect button removed
     initFAQ();
     initRocketScroll();
     initProgressBar();

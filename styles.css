@@ -33,7 +33,6 @@ Core styles for the GalacticBonk site.  Colours and spacing are defined
   box-sizing: border-box;
 }
 
-
 html {
   scroll-behavior: smooth;
 }
@@ -680,7 +679,6 @@ a:hover {
   color: var(--color-muted);
 }
 
-
 /* Footer */
 .footer {
   padding: 20px 0;
@@ -766,9 +764,14 @@ a:hover {
 
 /* Remove the backdrop square behind the tokenomics donut chart */
 .chart-container {
+  /* Remove any background and shadow so the starfield shines through */
   background: none !important;
   box-shadow: none !important;
+  /* Remove padding and rounding so there's no visible panel */
   padding: 0 !important;
+  border-radius: 0 !important;
+  /* Disable backdrop blur to avoid a tinted square around the chart */
+  backdrop-filter: none !important;
 }
 
 
@@ -777,19 +780,13 @@ a:hover {
   color: var(--color-text) !important;
 }
 
-/* Adjust hero section padding to align with other sections */
-.hero .section-inner {
-  padding: 40px 30px !important;
-}
-
-/* Remove scroll progress indicator */
-.progress-container {
+/* Hide hero and landing rockets */
+.rocket-container,
+.landing-container {
   display: none !important;
 }
 
-
-
-/* Hide rocket graphic */
-.rocket-container {
+/* Hide scroll progress indicator */
+.progress-container {
   display: none !important;
 }

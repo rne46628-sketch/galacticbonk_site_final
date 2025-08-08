@@ -13,7 +13,10 @@
   --color-secondary: #ff3860;
   --color-accent: #ffd700;
   --color-text: #f5f5f5;
-  --color-muted: #a0a0c0;
+  /* Muted text colour used for paragraphs and secondary labels.  Lightened
+     from the previous value to improve contrast against the dark
+     starfield.  A subtle lavender hue keeps with the galactic theme. */
+  --color-muted: #c5c5de;
   --font-heading: 'Bangers', cursive;
   --font-body: 'Inter', sans-serif;
   --section-height: 100vh;
@@ -293,31 +296,34 @@ a:hover {
 }
 .about {
   /* Increase background opacity for better contrast */
-  background: rgba(0, 0, 50, 0.6);
+  /* Increase opacity slightly for better readability against the animated
+     backdrop.  Each section uses a different tint to help separate
+     content while still letting the starfield show through. */
+  background: rgba(0, 0, 50, 0.7);
 }
 .buy {
-  background: rgba(0, 10, 60, 0.6);
+  background: rgba(0, 10, 60, 0.7);
 }
 .tokenomics {
-  background: rgba(0, 20, 70, 0.6);
+  background: rgba(0, 20, 70, 0.7);
 }
 .roadmap {
-  background: rgba(20, 0, 60, 0.6);
+  background: rgba(20, 0, 60, 0.7);
 }
 .how {
-  background: rgba(30, 0, 50, 0.6);
+  background: rgba(30, 0, 50, 0.7);
 }
 .community {
-  background: rgba(40, 0, 40, 0.6);
+  background: rgba(40, 0, 40, 0.7);
 }
 .faq {
-  background: rgba(50, 0, 30, 0.6);
+  background: rgba(50, 0, 30, 0.7);
 }
 
 /* Landing section styles.  The closing scene features a planet horizon and a
    rocket descending to symbolise the end of the journey. */
 .landing {
-  background: rgba(60, 0, 80, 0.6);
+  background: rgba(60, 0, 80, 0.7);
 }
 .planet {
   position: absolute;

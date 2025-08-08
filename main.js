@@ -15,16 +15,26 @@
     let stars = [];
     let comets = [];
     let supernovas = [];
+    let nebulas = [];
 
     // Helper to create a batch of stars
     function spawnStars(num) {
       for (let i = 0; i < num; i++) {
+        // Assign each star a base speed to create a parallax effect: slower
+        // stars appear further away and are rendered smaller and dimmer.  The
+        // range of speeds spans from very slow (0.15) to moderately fast
+        // (0.9).  The colour alpha is derived from the speed so that far
+        // stars twinkle softly while closer stars appear brighter.
+        const speed = 0.15 + Math.random() * 0.75;
+        const radius = 0.3 + Math.random() * 1.4;
+        // Compute alpha between 0.4 and 1.0 based on speed (faster = brighter)
+        const alpha = 0.4 + (speed / 0.9) * 0.6;
         stars.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          radius: 0.4 + Math.random() * 1.6,
-          // Increase speed for visible movement
-          speed: 0.4 + Math.random() * 0.6,
+          radius,
+          speed,
+          color: `rgba(255,255,255,${alpha.toFixed(3)})`,
         });
       }
     }
@@ -55,6 +65,29 @@
       };
     }
 
+    // Create a glowing nebula.  Nebulae are large, slowly rotating
+    // gradients that add depth and colour to the cosmos.  Each nebula
+    // maintains an angle for rotation; the gradient colours are chosen to
+    // complement the site palette.  Nebulae are drawn before stars so
+    // that stars can twinkle on top.
+    function spawnNebula() {
+      const colours = [
+        ['rgba(200, 80, 255, 0.05)', 'rgba(50, 0, 70, 0)'],
+        ['rgba(0, 150, 200, 0.05)', 'rgba(0, 30, 50, 0)'],
+        ['rgba(255, 80, 120, 0.05)', 'rgba(70, 0, 20, 0)'],
+      ];
+      const choice = colours[Math.floor(Math.random() * colours.length)];
+      return {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        radius: w * 0.5 + Math.random() * w * 0.4,
+        angle: Math.random() * Math.PI * 2,
+        speed: (Math.random() * 0.0005) + 0.0002,
+        inner: choice[0],
+        outer: choice[1],
+      };
+    }
+
     // Handle resizing of the canvas
     function onResize() {
       w = canvas.width = window.innerWidth;
@@ -62,12 +95,37 @@
       // reset the arrays and respawn
       stars = [];
       spawnStars(250);
+      nebulas = [];
+      // Spawn a few nebulae proportional to screen size.  Smaller screens
+      // receive fewer nebulas to prevent overwhelming the display.
+      const nebCount = Math.max(1, Math.floor(Math.min(w, h) / 600));
+      for (let i = 0; i < nebCount; i++) {
+        nebulas.push(spawnNebula());
+      }
     }
 
     // Draw the universe on each frame
     function draw() {
       ctx.clearRect(0, 0, w, h);
-      // Draw stars
+      // Draw nebulas (background).  Each nebula is a large radial gradient
+      // that slowly rotates.  Using save/restore ensures rotation does
+      // not interfere with other drawings.
+      nebulas.forEach((n) => {
+        ctx.save();
+        ctx.translate(n.x, n.y);
+        ctx.rotate(n.angle);
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, n.radius);
+        grad.addColorStop(0, n.inner);
+        grad.addColorStop(1, n.outer);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, n.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        // Advance rotation very slowly
+        n.angle += n.speed;
+      });
+      // Draw stars.  Stars are updated based on their individual speeds.
       stars.forEach((s) => {
         s.y += s.speed;
         if (s.y > h) {
@@ -75,7 +133,7 @@
           s.x = Math.random() * w;
         }
         ctx.beginPath();
-        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.fillStyle = s.color;
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
         ctx.fill();
       });

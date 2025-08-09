@@ -23,7 +23,11 @@
     // approach also makes the dog responsive to canvas transforms like
     // rotation and scaling.
     const dogImg = new Image();
-    dogImg.src = 'dog3d.png';
+    // Use a version of the mascot sprite with a radial fade around the edges so the
+    // dog appears to float in space without a rectangular backdrop.  The
+    // dog3d_fade.png asset was generated with a transparent radial mask to blend
+    // seamlessly with the starfield.  See scripts in /mnt/data for details.
+    dogImg.src = 'dog3d_fade.png';
     // Approximate aspect ratio of the dog sprite (width/height).  Our
     // cropped 3D mascot has a width of ~614px and height of ~1382px giving
     // a ratio of about 0.444.  This ratio is used to compute the base
